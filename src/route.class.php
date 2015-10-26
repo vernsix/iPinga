@@ -1,0 +1,134 @@
+<?php
+namespace iPinga;
+
+class route
+{
+
+    /**
+     * @var string
+     */
+    public $urlToMatch = '';
+
+    /**
+     * @var string
+     */
+    public $controller = '';
+
+    /**
+     * @var string
+     */
+    public $method = '';
+
+    /**
+     * @var string
+     */
+    public $middleware = '';
+
+
+
+    public static function launchController($controller,$method,$params)
+    {
+        $iPinga = \iPinga\iPinga::getInstance();
+        $controllerFile = $iPinga->config('path.controllers') . '/' . $controller . '.controller.php';
+
+        // include the controller
+        include $controllerFile;
+
+        // a new controller class instance
+        $class      = $controller . 'Controller';
+
+        $controller = new $class;
+        call_user_func_array(array($controller,$method), $params);
+
+    }
+
+
+    public function __construct($urlToMatch, $controller, $method, $middleware = null)
+    {
+        $this->urlToMatch = $urlToMatch;
+        $this->controller = $controller;
+        $this->method = $method;
+        $this->middleware = $middleware;
+    }
+
+
+    /**
+     * See if the url can be handled by this route
+     *
+     * @param string $route
+     *
+     * @return bool
+     */
+    public function handled($route = '')
+    {
+        $uriSegmentsInThisRoute = explode('/',$this->urlToMatch);
+        $uriSegmentsInActualRoute = explode('/', $route);
+
+        if ( count($uriSegmentsInActualRoute) == count($uriSegmentsInThisRoute) ) {
+
+            $ThisUrlUpToFirstDollarSign = explode('$',$this->urlToMatch)[0];
+
+            if ($ThisUrlUpToFirstDollarSign== substr($route,0,strlen($ThisUrlUpToFirstDollarSign))) {
+
+                if ($this->processMiddleWare()==true) {
+
+                    // have to explode these two again, in case middleware changed anything
+                    $uriSegmentsInThisRoute = explode('/',$this->urlToMatch);
+                    $uriSegmentsInActualRoute = explode('/', $route);
+
+                    $NumberOfParams = count(explode('$',$this->urlToMatch)) - 1;
+                    $params = array();
+                    for ($i = count($uriSegmentsInThisRoute) - $NumberOfParams; $i < count($uriSegmentsInThisRoute); $i++) {
+                        $params[] = $uriSegmentsInActualRoute[$i];
+                    }
+
+                    self::launchController($this->controller, $this->method, $params);
+
+                }
+
+                return true;
+
+            }
+        }
+
+        return false;
+
+    }
+
+    private function processMiddleWare()
+    {
+        $middlewareList = explode('|',$this->middleware);
+
+        $iPinga = \iPinga\iPinga::getInstance();
+
+        $result = true;
+        foreach ($middlewareList as $mw) {
+
+            if (empty($mw)==false) {
+
+                $middlewareFile = $iPinga->config('path.middleware') . '/' . $mw . '.middleware.php';
+
+                // include the controller
+                include $middlewareFile;
+
+                // a new controller class instance
+                $class = $mw . 'Middleware';
+
+                $middleware = new $class;
+                $result = call_user_func_array(array($middleware, 'call'), array($iPinga));
+
+                if ($result === false) {
+                    break;
+                }
+
+            }
+
+        }
+
+        return $result;
+
+    }
+
+
+}
+?>

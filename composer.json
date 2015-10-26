@@ -1,0 +1,32 @@
+{
+  "name": "vernsix/ipinga",
+  "description": "iPinga, a PHP mini framework",
+  "type": "library",
+  "keywords": ["miniframework","router"],
+  "homepage": "http://ipinga.com",
+  "time": "2015-10-26",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vern Six",
+      "email": "vern@vernsix.com",
+      "homepage": "http://www.iPinga/",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "vern@ipinga.com"
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "suggest": {
+    "ext-mcrypt": "Required for HTTP cookie encryption"
+  },
+  "autoload": {
+    "psr-4": {
+      "iPinga\\": "src/"
+    }
+  }
+}
