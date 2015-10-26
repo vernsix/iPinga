@@ -10,7 +10,7 @@ committed to simplicity and productivity.  It is a full-stack web application
 framework, written in PHP, supporting v5.3 and beyond.  iPinga is based on 
 the model-view-controller development architecture.  
 
-PHP developers need a fast and reliable environment without everything that 
+Most PHP developers need a fast and reliable environment without everything that 
 larger frameworks include.  iPinga is built with this in mind and excels 
 because of its simplicity and ease of rapid development.
 
