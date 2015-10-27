@@ -240,7 +240,7 @@ namespace {
     /*
     * Autoload the developers' code, not the ipinga code per se
     */
-    function ipingaAutoload($className)
+    function ipinga_autoload($className)
     {
 
         $ipinga = \ipinga\ipinga::getInstance();
@@ -292,10 +292,10 @@ namespace {
 
     }
 
-    spl_autoload_register('ipingaAutoload');
+    spl_autoload_register('ipinga_autoload');
 
 
-    function ipingaShutdown()
+    function ipinga_shutdown()
     {
         // v6_debug::dump();
 
@@ -317,7 +317,7 @@ namespace {
         }
     }
 
-    register_shutdown_function('ipingaShutdown');
+    register_shutdown_function('ipinga_shutdown');
 
 }
 
