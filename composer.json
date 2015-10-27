@@ -1,6 +1,6 @@
 {
   "name": "vernsix/ipinga",
-  "description": "iPinga, a PHP mini framework",
+  "description": "ipinga, a PHP mini framework",
   "type": "library",
   "keywords": ["miniframework","router"],
   "homepage": "http://ipinga.com",
@@ -10,7 +10,7 @@
     {
       "name": "Vern Six",
       "email": "vern@vernsix.com",
-      "homepage": "http://www.iPinga/",
+      "homepage": "http://www.ipinga/",
       "role": "Developer"
     }
   ],
@@ -26,7 +26,7 @@
   },
   "autoload": {
     "psr-4": {
-      "iPinga\\": "src/"
+      "ipinga\\": "src/"
     }
   }
 }

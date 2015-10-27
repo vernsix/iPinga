@@ -1,5 +1,5 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
 class route
 {
@@ -28,8 +28,8 @@ class route
 
     public static function launchController($controller,$method,$params)
     {
-        $iPinga = \iPinga\iPinga::getInstance();
-        $controllerFile = $iPinga->config('path.controllers') . '/' . $controller . '.controller.php';
+        $ipinga = \ipinga\ipinga::getInstance();
+        $controllerFile = $ipinga->config('path.controllers') . '/' . $controller . '.controller.php';
 
         // include the controller
         include $controllerFile;
@@ -99,14 +99,14 @@ class route
     {
         $middlewareList = explode('|',$this->middleware);
 
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         $result = true;
         foreach ($middlewareList as $mw) {
 
             if (empty($mw)==false) {
 
-                $middlewareFile = $iPinga->config('path.middleware') . '/' . $mw . '.middleware.php';
+                $middlewareFile = $ipinga->config('path.middleware') . '/' . $mw . '.middleware.php';
 
                 // include the controller
                 include $middlewareFile;
@@ -115,7 +115,7 @@ class route
                 $class = $mw . 'Middleware';
 
                 $middleware = new $class;
-                $result = call_user_func_array(array($middleware, 'call'), array($iPinga));
+                $result = call_user_func_array(array($middleware, 'call'), array($ipinga));
 
                 if ($result === false) {
                     break;

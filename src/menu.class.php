@@ -1,5 +1,5 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
 class menu
 {
@@ -31,7 +31,7 @@ class menu
         if (isset($this->links[$tab])==false) {
             $this->links[$tab] = array();
         }
-        $this->links[$tab][] = new \iPinga\menuItem($name,$url,$target);
+        $this->links[$tab][] = new \ipinga\menuItem($name,$url,$target);
     }
 
     /**

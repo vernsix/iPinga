@@ -1,5 +1,5 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
 
 Class databaseList
@@ -33,12 +33,12 @@ Class databaseList
      */
     function read_from_db($sql)
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         $this->records = array(); // start fresh with an empty list
         try {
-            foreach ($iPinga->pdo()->query($sql) as $row) {
-                $tbl = new \iPinga\table($this->tableName);
+            foreach ($ipinga->pdo()->query($sql) as $row) {
+                $tbl = new \ipinga\table($this->tableName);
                 $tbl->loadById($row['id']);
                 $this->records[] = $tbl;
             }

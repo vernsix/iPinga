@@ -1,5 +1,5 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
 class menuItem
 {

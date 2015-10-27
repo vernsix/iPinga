@@ -1,5 +1,5 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
 /**
  * @throws Exception
@@ -70,9 +70,9 @@ Class template
             array_merge($this->vars,$newvars);
         }
 
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
-        $viewFilename = $iPinga->config('path.views') . '/' . $filename . '.view.php';
+        $viewFilename = $ipinga->config('path.views') . '/' . $filename . '.view.php';
 
         if ($this->showViewFilename == true) {
             echo '<!-- ' . $viewFilename . ' -->' . PHP_EOL . PHP_EOL;
@@ -88,7 +88,7 @@ Class template
         }
 
         // if sysmaint.view.php exists, then the system is down for maintenance and I should show that view instead
-        $sysmaint = $iPinga->config('path.views') . '/sysmaint.view.php';
+        $sysmaint = $ipinga->config('path.views') . '/sysmaint.view.php';
         if (file_exists($sysmaint) == true) {
             include_once($sysmaint);
         } else {
@@ -105,9 +105,9 @@ Class template
      */
     public function include_file($filename)
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
-        $fullFilename = $iPinga->config('path.views') . '/' . $filename . '.php';
+        $fullFilename = $ipinga->config('path.views') . '/' . $filename . '.php';
         if (file_exists($fullFilename) == false) {
             throw new \Exception('View not found in ' . $fullFilename);
         }

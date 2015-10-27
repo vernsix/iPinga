@@ -1,17 +1,17 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
-Class userTable Extends \iPinga\table
+Class userTable Extends \ipinga\table
 {
 
     public function loadByEmail($email = '')
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
         $this->clear();
         try {
             $sql = 'select * from ' . $this->tableName . ' where email = :email';
             $this->lastSql = $sql;
-            $stmt = $iPinga->pdo()->prepare($sql);
+            $stmt = $ipinga->pdo()->prepare($sql);
             $stmt->bindParam(':email', $email);
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
@@ -23,13 +23,13 @@ Class userTable Extends \iPinga\table
 
     public function isDupeEmail($email = '')
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
         $IsDupe = true;
         if (!empty($email)) {
             try {
                 $sql = 'select count(*) as row_count from ' . $this->tableName . ' where email = :email';
                 $this->lastSql = $sql;
-                $stmt = $iPinga->pdo()->prepare($sql);
+                $stmt = $ipinga->pdo()->prepare($sql);
                 $stmt->bindParam(':email', $email);
                 $stmt->execute();
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -46,12 +46,12 @@ Class userTable Extends \iPinga\table
 
     public function loadByUsername($username = '')
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
         $this->clear();
         try {
             $sql = 'select * from ' . $this->tableName . ' where username = :username';
             $this->lastSql = $sql;
-            $stmt = $iPinga->pdo()->prepare($sql);
+            $stmt = $ipinga->pdo()->prepare($sql);
             $stmt->bindParam(':username', $username);
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
@@ -63,13 +63,13 @@ Class userTable Extends \iPinga\table
 
     public function isDupeUsername($username = '')
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
         $IsDupe = true;
         if (!empty($username)) {
             try {
                 $sql = 'select count(*) as row_count from ' . $this->tableName . ' where username = :username';
                 $this->lastSql = $sql;
-                $stmt = $iPinga->pdo()->prepare($sql);
+                $stmt = $ipinga->pdo()->prepare($sql);
                 $stmt->bindParam(':username', $username);
                 $stmt->execute();
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);

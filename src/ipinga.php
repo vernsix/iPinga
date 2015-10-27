@@ -3,7 +3,7 @@
     Vern Six MVC Framework version 3.0
 
     Copyright (c) 2007-2015 by Vernon E. Six, Jr.
-    Author's websites: http://www.iPinga.com and http://www.VernSix.com
+    Author's websites: http://www.ipinga.com and http://www.VernSix.com
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to use
@@ -23,15 +23,15 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 */
-namespace iPinga {
+namespace ipinga {
 
-    class iPinga
+    class ipinga
     {
 
         protected $configOptions = array();
 
         /**
-         * @var \iPinga\iPinga
+         * @var \ipinga\ipinga
          */
         protected static $instance;
 
@@ -51,9 +51,9 @@ namespace iPinga {
         public $defaultRoute = array();
 
         /**
-         * Get instance of the iPinga object
+         * Get instance of the ipinga object
          *
-         * @return \iPinga\iPinga|null
+         * @return \ipinga\ipinga|null
          */
         public static function getInstance()
         {
@@ -79,7 +79,7 @@ namespace iPinga {
             // php acts stupid without setting the timezone
             date_default_timezone_set($this->configOptions['time.timezone']);
 
-            // so outside functions can get ahold of the iPinga object
+            // so outside functions can get ahold of the ipinga object
             static::$instance = $this;
 
         }
@@ -92,7 +92,7 @@ namespace iPinga {
             $this->configOptions['cookie.expiration_time'] = time() + (60 * 60 * 24 * 30);   //   30 days from now
 
             $this->configOptions['encryption.algorithm'] = MCRYPT_RIJNDAEL_128;
-            $this->configOptions['encryption.iv'] = md5('iPinga');
+            $this->configOptions['encryption.iv'] = md5('ipinga');
             $this->configOptions['encryption.key'] = 'you should change this'; // bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
             $this->configOptions['encryption.mode'] = MCRYPT_MODE_CBC;
 
@@ -183,7 +183,7 @@ namespace iPinga {
             $routeHandled = false;
             foreach( $this->routes as $route) {
 
-                /* @var $route \iPinga\route */
+                /* @var $route \ipinga\route */
 
                 if ($route->handled($rt) == true) {
                     $routeHandled = true;
@@ -194,7 +194,7 @@ namespace iPinga {
 
             if ($routeHandled===false) {
                 if (count($this->defaultRoute)==2) {
-                    \iPinga\route::launchController($this->defaultRoute[0],$this->defaultRoute[1],array());
+                    \ipinga\route::launchController($this->defaultRoute[0],$this->defaultRoute[1],array());
                 } else {
                     echo 'No route found!' . PHP_EOL;
                 }
@@ -213,7 +213,7 @@ namespace iPinga {
          */
         public function addRoute($urlToMatch,$controller,$method,$middleware=null)
         {
-            $this->routes[] = new \iPinga\route($urlToMatch,$controller,$method,$middleware);
+            $this->routes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware);
         }
 
         /**
@@ -243,11 +243,11 @@ namespace {
     function ipingaAutoload($className)
     {
 
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
-        // is this something in the iPinga framework?
-        if (strpos($className,'iPinga\\')===0) {
-            $file = $iPinga->config('path.framework'). '/' . substr($className,7) . '.class.php';
+        // is this something in the ipinga framework?
+        if (strpos($className,'ipinga\\')===0) {
+            $file = $ipinga->config('path.framework'). '/' . substr($className,7) . '.class.php';
             if (file_exists($file) == true) {
                 require_once $file;
                 return true;
@@ -258,7 +258,7 @@ namespace {
         $filename = strtolower($className) . '.controller.php';
 
         // part of the application controllers?
-        $file = $iPinga->config('path.controllers') . '/' . $filename;
+        $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
             require_once $file;
             return true;
@@ -268,21 +268,21 @@ namespace {
         $filename = strtolower($className) . '.class.php';
 
         // part of the application controllers?
-        $file = $iPinga->config('path.controllers') . '/' . $filename;
+        $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
             require_once $file;
             return true;
         }
 
         // part of the application models?
-        $file = $iPinga->config('path.models') . '/' . $filename;
+        $file = $ipinga->config('path.models') . '/' . $filename;
         if (file_exists($file) == true) {
             require_once $file;
             return true;
         }
 
         // some other class?
-        $file = $iPinga->config('path.classes') . '/' . $filename;
+        $file = $ipinga->config('path.classes') . '/' . $filename;
         if (file_exists($file) == true) {
             require_once $file;
             return true;
@@ -299,7 +299,7 @@ namespace {
     {
         // v6_debug::dump();
 
-        \iPinga\cookie::set();
+        \ipinga\cookie::set();
 
         @ob_end_flush();
 

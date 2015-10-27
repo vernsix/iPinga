@@ -3,7 +3,7 @@
     Vern Six MVC Framework version 3.0
 
     Copyright (c) 2007-2015 by Vernon E. Six, Jr.
-    Author's websites: http://www.iPinga.com and http://www.VernSix.com
+    Author's websites: http://www.ipinga.com and http://www.VernSix.com
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to use
@@ -23,7 +23,7 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 */
-namespace iPinga;
+namespace ipinga;
 
 class cookie
 {
@@ -33,7 +33,7 @@ class cookie
 
     public static function initialize()
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         if (isset(static::$contents) == false) {
 
@@ -41,8 +41,8 @@ class cookie
             static::$contents = array();
 
             // if the request came in with a cookie, decrypt it into our contents
-            if (isset($_COOKIE[$iPinga->config('cookie.name')]) == true) {
-                $clearText = \iPinga\crypto::decrypt( $_COOKIE[$iPinga->config('cookie.name')] );
+            if (isset($_COOKIE[$ipinga->config('cookie.name')]) == true) {
+                $clearText = \ipinga\crypto::decrypt( $_COOKIE[$ipinga->config('cookie.name')] );
                 $a = json_decode($clearText, true);
                 static::$contents = $a['kludge'];
             }
@@ -55,17 +55,17 @@ class cookie
     {
         static::initialize();
 
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         if (count(static::$contents) == 0) {
             // expire it now
-            if (isset($_COOKIE[$iPinga->config('cookie.name')]) == true) {
-                setcookie($iPinga->config('cookie.name'), '', 1, '/');
+            if (isset($_COOKIE[$ipinga->config('cookie.name')]) == true) {
+                setcookie($ipinga->config('cookie.name'), '', 1, '/');
             }   // no need for an else branch, as it wasn't there to begin with
         } else {
             $a = array('kludge' => static::$contents);
-            $encrypted = \iPinga\crypto::encrypt(json_encode($a));
-            setcookie($iPinga->config('cookie.name'), $encrypted, $iPinga->config('cookie.expiration_time'),'/');
+            $encrypted = \ipinga\crypto::encrypt(json_encode($a));
+            setcookie($ipinga->config('cookie.name'), $encrypted, $ipinga->config('cookie.expiration_time'),'/');
         }
     }
 
@@ -114,14 +114,14 @@ class cookie
     public static function debug($suffix = '')
     {
         foreach (static::$contents as $k => $v) {
-            header('X-iPingaCryptoCookie-' . $suffix . $k . ': ' . json_encode($v));
+            header('X-ipingaCryptoCookie-' . $suffix . $k . ': ' . json_encode($v));
         }
     }
 
     // easy to see what was in a cookie this way
     public static function decrypt($encryptedString)
     {
-        $clearText = \iPinga\crypto::decrypt($encryptedString);
+        $clearText = \ipinga\crypto::decrypt($encryptedString);
         $a = json_decode($clearText, true);
         return $a;
     }

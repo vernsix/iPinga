@@ -1,5 +1,5 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
 class manager
 {
@@ -27,21 +27,21 @@ class manager
      */
     function __construct($overrideSettings = array())
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         // params override global settings
-        $this->settings['manager.max_minutes'] = (isset($overrideSettings['manager.max_minutes'])) ? $overrideSettings['manager.max_minutes'] : $iPinga->config('manager.max_minutes');
-        $this->settings['manager.login_url'] = (isset($overrideSettings['manager.login_url'])) ? $overrideSettings['manager.login_url'] : $iPinga->config('manager.login_url');
-        $this->settings['manager.expired_url'] = (isset($overrideSettings['manager.expired_url'])) ? $overrideSettings['manager.expired_url'] : $iPinga->config('manager.expired_url');
-        $this->settings['manager.ip_changed_url'] = (isset($overrideSettings['manager.ip_changed_url'])) ? $overrideSettings['manager.ip_changed_url'] : $iPinga->config('manager.ip_changed_url');
+        $this->settings['manager.max_minutes'] = (isset($overrideSettings['manager.max_minutes'])) ? $overrideSettings['manager.max_minutes'] : $ipinga->config('manager.max_minutes');
+        $this->settings['manager.login_url'] = (isset($overrideSettings['manager.login_url'])) ? $overrideSettings['manager.login_url'] : $ipinga->config('manager.login_url');
+        $this->settings['manager.expired_url'] = (isset($overrideSettings['manager.expired_url'])) ? $overrideSettings['manager.expired_url'] : $ipinga->config('manager.expired_url');
+        $this->settings['manager.ip_changed_url'] = (isset($overrideSettings['manager.ip_changed_url'])) ? $overrideSettings['manager.ip_changed_url'] : $ipinga->config('manager.ip_changed_url');
 
         $this->newUrl = '';
     }
 
     private function loadFromCookie()
     {
-        if (\iPinga\cookie::keyExists('loggedInDetails') == true) {
-            $this->loggedInDetails = \iPinga\cookie::keyValue('loggedInDetails');
+        if (\ipinga\cookie::keyExists('loggedInDetails') == true) {
+            $this->loggedInDetails = \ipinga\cookie::keyValue('loggedInDetails');
         } else {
             $this->loggedInDetails = array();
         }
@@ -49,7 +49,7 @@ class manager
 
     private function shutdown()
     {
-        \iPinga\cookie::add('loggedInDetails', $this->loggedInDetails);
+        \ipinga\cookie::add('loggedInDetails', $this->loggedInDetails);
     }
 
 

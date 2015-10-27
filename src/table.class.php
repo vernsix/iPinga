@@ -1,5 +1,5 @@
 <?php
-namespace iPinga;
+namespace ipinga;
 
 /*
 * note: You need to make sure MySql is not running in strict mode.   Try using the following SQL statement from phpmyadmin
@@ -22,13 +22,13 @@ class table
 
     function __construct($tableName)
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         $this->tableName = $tableName;
 
         $sql = sprintf('describe %s', $this->tableName);
         try {
-            foreach ($iPinga->pdo()->query($sql) as $row) {
+            foreach ($ipinga->pdo()->query($sql) as $row) {
 
                 $fieldName = $row['Field'];
 
@@ -112,7 +112,7 @@ class table
 
     private function _Update()
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         $sql = 'update ' . $this->tableName . ' set ';
 
@@ -131,14 +131,14 @@ class table
         $sql .= ' where id=:id';
         $this->lastSql = $sql;
         $this->sqlParams = array();    // start fresh
-        $stmt = $iPinga->pdo()->prepare($sql);
+        $stmt = $ipinga->pdo()->prepare($sql);
 
 
         foreach ($this->fieldTypes as $fieldName => $fieldType) {
             // id and timestamp take care of themselves in the database
             if ($fieldType <> 'timestamp') {
                 if ($fieldName == 'passwd') {
-                    $passwd = bin2hex(\iPinga\crypto::encrypt($this->field[$fieldName]));
+                    $passwd = bin2hex(\ipinga\crypto::encrypt($this->field[$fieldName]));
                     $stmt->bindParam(':' . $fieldName, $passwd);
                     $this->sqlParams[$fieldName] = $passwd;
                 } else {
@@ -152,7 +152,7 @@ class table
         try {
             $retval = $stmt->execute();
             if ($this->field['id'] == 0) {
-                $this->field['id'] = $iPinga->pdo()->lastInsertId();
+                $this->field['id'] = $ipinga->pdo()->lastInsertId();
             }
             $this->saved = true;
         } catch (\PDOException $e) {
@@ -165,7 +165,7 @@ class table
     private function _Insert()
     {
 
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
 
         $sqlfields = array();
         $sqlparams = array();
@@ -182,7 +182,7 @@ class table
         $this->lastSql = $sql;
         $this->sqlParams = array();
 
-        $sth = $iPinga->pdo()->prepare($sql);
+        $sth = $ipinga->pdo()->prepare($sql);
         foreach ($this->fieldTypes as $fieldName => $fieldType) {
             // id and timestamp take care of themselves in the database
             if ($fieldType <> 'timestamp') {
@@ -191,7 +191,7 @@ class table
                     $sth->bindParam(':' . $fieldName, $created);
                     $this->sqlParams[$fieldName] = $created;
                 } elseif ($fieldName == 'passwd') {
-                    $passwd = bin2Hex(\iPinga\crypto::encrypt($this->field[$fieldName]));
+                    $passwd = bin2Hex(\ipinga\crypto::encrypt($this->field[$fieldName]));
                     //            $passwd = base64_encode($this->field[$fieldName]);
                     $sth->bindParam(':' . $fieldName, $passwd);
                     $this->sqlParams[$fieldName] = $passwd;
@@ -205,7 +205,7 @@ class table
         try {
             $retval = $sth->execute();
             if ($this->field['id'] == 0) {
-                $this->field['id'] = $iPinga->pdo()->lastInsertId();
+                $this->field['id'] = $ipinga->pdo()->lastInsertId();
             }
             $this->saved = true;
         } catch (\PDOException $e) {
@@ -237,12 +237,12 @@ class table
      */
     public function deleteById($id)
     {
-        $iPinga = \iPinga\iPinga::getInstance();
+        $ipinga = \ipinga\ipinga::getInstance();
         $this->clear();
         try {
             $sql = 'delete from from ' . $this->tableName . ' where id = :id';
             $this->lastSql = $sql;
-            $stmt = $iPinga->pdo()->prepare($sql);
+            $stmt = $ipinga->pdo()->prepare($sql);
             $stmt->bindParam(':id', $id);
             $this->sqlParams = array('id' => $id );
             $stmt->execute();
@@ -272,7 +272,7 @@ class table
 
             foreach ($this->fieldTypes as $fieldName => $fieldType) {
                 if ($fieldName == 'passwd') {
-                    $this->field[$fieldName] = \iPinga\crypto::decrypt(hex2bin($row['passwd']));
+                    $this->field[$fieldName] = \ipinga\crypto::decrypt(hex2bin($row['passwd']));
                 } else {
                     $this->field[$fieldName] = $row[$fieldName];
                 }
@@ -298,7 +298,7 @@ class table
             try {
                 $sql = 'select * from ' . $this->tableName . ' where id = :id';
                 $this->lastSql = $sql;
-                $stmt = \iPinga\iPinga::getInstance()->pdo()->prepare($sql);
+                $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
                 $stmt->bindParam(':id', $id);
                 $this->sqlParams = array('id' => $id);
                 $this->_process_loadby_execute($stmt);
@@ -317,7 +317,7 @@ class table
         try {
             $sql = 'select * from ' . $this->tableName . ' where ' . $fieldName . ' = :desired_value';
             $this->lastSql = $sql;
-            $stmt = \iPinga\iPinga::getInstance()->pdo()->prepare($sql);
+            $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
             $stmt->bindParam(':desired_value', $desiredValue);
             $this->sqlParams = array('desired_value'=>$desiredValue);
             $this->_process_loadby_execute($stmt);
@@ -345,7 +345,7 @@ class table
             $sql = 'select * from ' . $this->tableName . ' where ' . $where;
             $this->lastSql = $sql;
             $this->sqlParams = array();
-            $stmt = \iPinga\iPinga::getInstance()->pdo()->prepare($sql);
+            $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
             echo $e->getMessage() . '<br>' . $sql . '<br><hr>';

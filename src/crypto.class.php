@@ -3,7 +3,7 @@
     Vern Six MVC Framework version 3.0
 
     Copyright (c) 2007-2015 by Vernon E. Six, Jr.
-    Author's websites: http://www.iPinga.com and http://www.VernSix.com
+    Author's websites: http://www.ipinga.com and http://www.VernSix.com
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to use
@@ -23,7 +23,7 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 */
-namespace iPinga;
+namespace ipinga;
 
 class crypto
 {
@@ -37,13 +37,13 @@ class crypto
     {
         if ((count(self::$settings) == 0) || (count($overrideDefaults) > 0)) {
 
-            $iPinga = \iPinga\iPinga::getInstance();
+            $ipinga = \ipinga\ipinga::getInstance();
 
             $defaults = array(
-                'encryption.algorithm' => $iPinga->config('encryption.algorithm'),
-                'encryption.mode' => $iPinga->config('encryption.mode'),
-                'encryption.key' => $iPinga->config('encryption.key'),
-                'encryption.iv' => $iPinga->config('encryption.iv')
+                'encryption.algorithm' => $ipinga->config('encryption.algorithm'),
+                'encryption.mode' => $ipinga->config('encryption.mode'),
+                'encryption.key' => $ipinga->config('encryption.key'),
+                'encryption.iv' => $ipinga->config('encryption.iv')
             );
             self::$settings = array_merge($defaults, $overrideDefaults);
 

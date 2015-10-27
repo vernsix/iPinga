@@ -3,7 +3,7 @@
     Vern Six MVC Framework version 3.0
 
     Copyright (c) 2007-2015 by Vernon E. Six, Jr.
-    Author's websites: http://www.iPinga.com and http://www.VernSix.com
+    Author's websites: http://www.ipinga.com and http://www.VernSix.com
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to use
@@ -23,7 +23,7 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 */
-namespace iPinga;
+namespace ipinga;
 
 Abstract Class middleware
 {
