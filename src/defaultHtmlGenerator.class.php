@@ -194,7 +194,11 @@ Class defaultHtmlGenerator extends \iPinga\htmlGenerator
         // keeping this comment here for quick reference is all.
 
         echo '<select';
-        $varName = $this->echoCoreAttributes($settings);
+        if (isset($this->template->vars['class'])) {
+            $varName = $this->echoCoreAttributes($settings);
+        } else {
+            $varName = $this->echoCoreAttributes(array_merge($settings,array('class'=>'text ui-widget ui-corner-all')));
+        }
         echo '>';
 
         if (isset($settings['addfirst']) && ($settings['addfirst'] == true)) {
