@@ -25,51 +25,76 @@
 */
 namespace ipinga;
 
-Abstract Class controller
+Abstract Class htmlGenerator
 {
+
+    /**
+     * @param $settings array
+     * @param $attrName string
+     *
+     * @return null
+     */
+    abstract public function echoAttribute($settings,$attrName);
+
+    /**
+     * @param $settings
+     *
+     * @return string $fieldName
+     */
+    abstract public function echoCoreAttributes($settings);
+
+    /**
+     * @param $settings
+     * @param $varName
+     *
+     * @return null
+     */
+    abstract public function echoHints($settings,$varName);
+
+    /**
+     * @param $settings
+     *
+     * @return null
+     */
+    abstract public function textarea($settings);
+
+    /**
+     * @param $settings
+     *
+     * @return null
+     */
+    abstract public function field($settings);
+
+    /**
+     * @param $settings
+     *
+     * @return null
+     */
+    abstract public function select($settings);
+
+    /**
+     * @param $settings
+     *
+     * @return null
+     */
+    abstract public function hint($settings);
+
+    /**
+     * @param $settings
+     *
+     * @return null
+     */
+    abstract public function label($settings);
 
     /**
      * @var \ipinga\template
      */
-    public $template;
+    protected $template;
 
-    /**
-     * I like having this, but it's really not needed by every controller by any means.
-     *
-     * @var array
-     */
-    public $json = array();
-
-
-    function __construct()
+    public function __construct()
     {
-        $this->template = new \ipinga\template();
+        $this->template = \ipinga\template::getInstance();
     }
-
-
-    /**
-     * all controllers must contain an index method
-     */
-    abstract function index();
-
-
-    public function SendJSON($arrayToSendAsJson = null)
-    {
-
-        // If you get careless, this next line can be uncommented to wipe clean all the output buffer prior to
-        // setting the value in the header.   But if you are going to send a json response, it really should be
-        // your only response and therefore the buffer shouldn't have anything in it.  Uncommenting this line
-        // is only a suggestion for lazy programmers   :)
-        //
-        // ob_end_clean();
-
-        header("Content-Type:text/json");
-        echo json_encode(isset($arrayToSendAsJson) ? $arrayToSendAsJson : $this->json);
-        exit();
-    }
-
-
-
 
 }
 
