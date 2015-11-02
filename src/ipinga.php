@@ -51,11 +51,6 @@ namespace ipinga {
         public $defaultRoute = array();
 
         /**
-         * @var \ipinga\manager $manager
-         */
-        public $manager;
-
-        /**
          * Get instance of the ipinga object
          *
          * @return \ipinga\ipinga|null
@@ -77,8 +72,6 @@ namespace ipinga {
         {
             // start with defaults
             $this->setConfigOptionsToDefault();
-                        
-            $this->manager = new \ipinga\manager();
 
             // allow the developer to override all the defaults.  Notice: no checking is performed !
             $this->configOptions = array_merge($this->configOptions,$overrideConfigOptions);
