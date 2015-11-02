@@ -51,6 +51,12 @@ namespace ipinga {
         public $defaultRoute = array();
 
         /**
+         * @var \ipinga\manager
+         */
+        public $manager;
+
+
+        /**
          * Get instance of the ipinga object
          *
          * @return \ipinga\ipinga|null
@@ -81,6 +87,8 @@ namespace ipinga {
 
             // so outside functions can get ahold of the ipinga object
             static::$instance = $this;
+
+            $this->manager = new \ipinga\manager($this->configOptions);
 
         }
 
