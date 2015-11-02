@@ -5,6 +5,14 @@ Class template
 {
 
     /**
+     * Added this merely to make my ide behave better with hints, etc.
+     *
+     * @var \ipinga\htmlGenerator
+     */
+    public $html;
+
+
+    /**
      * @var \ipinga\template
      */
     protected static $instance;
@@ -35,9 +43,9 @@ Class template
         $this->vars['json'] = array();
 
         if (isset($htmlGenerator)==true) {
-            $this->vars['html'] = $htmlGenerator;
+            $this->html = $htmlGenerator;
         } else {
-            $this->vars['html'] = new \ipinga\defaultHtmlGenerator();
+            $this->html = new \ipinga\defaultHtmlGenerator();
         }
 
         // so outside functions can get ahold of the template object
