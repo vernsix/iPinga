@@ -25,7 +25,7 @@
 */
 namespace ipinga;
 
-Class defaultHtmlGenerator extends \iPinga\htmlGenerator
+Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 {
 
     /**
