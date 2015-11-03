@@ -5,14 +5,6 @@ Class template
 {
 
     /**
-     * Added this merely to make my ide behave better with hints, etc.
-     *
-     * @var \ipinga\htmlGenerator
-     */
-    public $html;
-
-
-    /**
      * @var \ipinga\template
      */
     protected static $instance;

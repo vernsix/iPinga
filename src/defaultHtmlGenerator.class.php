@@ -82,7 +82,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public function echoHints($settings, $varName)
     {
-
         // did the developer provide a specific hint?
         if (isset($settings['hint'])) {
             $this->hint($settings['hint']);
@@ -90,18 +89,14 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         // regardless if a specific hint, should we display one based on the $vars model in the template?
         if (isset($settings['showhints']) && ($settings['showhints'] == true)) {
-
             $hintVarName = $varName . '_hint'; // cleaner to look at below
-
-            if (isset($this->template->vars[$hintVarName]) && (!empty($this->template->vars[$hintVarName]))) {
+            if (isset(template::getInstance()->vars[$hintVarName]) && (!empty(template::getInstance()->vars[$hintVarName]))) {
                 $this->hint(array_merge($settings, array(
-                        'hint' => $this->template->vars[$hintVarName]
+                        'hint' => template::getInstance()->vars[$hintVarName]
                     )
                 ));
             }
-
         }
-
     }
 
     /**
@@ -117,21 +112,14 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         }
 
         echo '<textarea';
-
         $this->echoAttribute($settings, 'rows');
-
         $this->echoAttribute($settings, 'cols');
-
         $varName = $this->echoCoreAttributes($settings);
-
         echo '>';
-
         echo $this->varValue($settings, $varName);
-
         echo '</textarea>';
 
         $this->echoHints($settings, $varName);
-
     }
 
 
@@ -154,7 +142,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         } else {
             echo ' type="text"';
         }
-
         $varName = $this->echoCoreAttributes($settings);
 
         echo ' value="' . $this->varValue($settings, $varName) . '"';
@@ -175,7 +162,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         echo '>';
 
         $this->echoHints($settings, $varName);
-
     }
 
     /**
@@ -194,7 +180,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         // keeping this comment here for quick reference is all.
 
         echo '<select';
-        if (isset($this->template->vars['class'])) {
+        if (isset(template::getInstance()->vars['class'])) {
             $varName = $this->echoCoreAttributes($settings);
         } else {
             $varName = $this->echoCoreAttributes(array_merge($settings,array('class'=>'text ui-widget ui-corner-all')));
@@ -217,12 +203,12 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
                 } else {
                     echo '<option value="">Select one...</option>';
                 }
-                
+
             }
         }
 
         foreach ($settings['choices'] as $key => $value) {
-            
+
             echo '<option value="' . $key . '"';
             if (isset($settings['selected'])) {
                 if ($key == $settings['selected']) {
@@ -240,7 +226,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         }
 
         echo '</select>';
-
     }
 
     /**
@@ -332,8 +317,8 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         // is it in the template array?
         if (!isset($value)) {
             if (isset($settings['checktemplatevars']) && ($settings['checktemplatevars'] == true)) {
-                if (isset($this->template->vars[$varName]) == true) {
-                    $value = $this->template->vars[$varName];
+                if (isset(template::getInstance()->vars[$varName]) == true) {
+                    $value = template::getInstance()->vars[$varName];
                 }
             }
         }

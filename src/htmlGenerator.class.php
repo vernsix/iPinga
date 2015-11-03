@@ -86,16 +86,6 @@ Abstract Class htmlGenerator
      */
     abstract public function label($settings);
 
-    /**
-     * @var \ipinga\template
-     */
-    protected $template;
-
-    public function __construct()
-    {
-        $this->template = \ipinga\template::getInstance();
-    }
-
 }
 
 ?>
