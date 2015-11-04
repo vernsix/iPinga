@@ -4,6 +4,9 @@ namespace ipinga;
 class route
 {
 
+    /**
+     * @var bool
+     */
     public $fired = false;
 
     /**
@@ -67,17 +70,17 @@ class route
 
         if (count($uriSegmentsInActualRoute) == count($uriSegmentsInThisRoute)) {
 
-            $ThisUrlUpToFirstDollarSign = explode('$', $this->urlToMatch)[0];
+            $ThisUrlUpToFirstDollarSign = explode('$',$this->urlToMatch)[0];
 
             if ($ThisUrlUpToFirstDollarSign == substr($route, 0, strlen($ThisUrlUpToFirstDollarSign))) {
 
-                if ($this->processMiddleWare() == true) {
+                if ($this->processMiddleWare()==true) {
 
                     // have to explode these two again, in case middleware changed anything
-                    $uriSegmentsInThisRoute = explode('/', $this->urlToMatch);
+                    $uriSegmentsInThisRoute = explode('/',$this->urlToMatch);
                     $uriSegmentsInActualRoute = explode('/', $route);
 
-                    $NumberOfParams = count(explode('$', $this->urlToMatch)) - 1;
+                    $NumberOfParams = count(explode('$',$this->urlToMatch)) - 1;
                     $params = array();
                     for ($i = count($uriSegmentsInThisRoute) - $NumberOfParams; $i < count($uriSegmentsInThisRoute); $i++) {
                         $params[] = $uriSegmentsInActualRoute[$i];
@@ -86,12 +89,11 @@ class route
                     self::launchController($this->controller, $this->method, $params);
 
                     $this->fired = true;
-                    return true;
-
-                } else {
 
                     return true;
+
                 }
+
 
             }
         }
