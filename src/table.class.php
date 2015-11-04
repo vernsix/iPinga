@@ -240,7 +240,7 @@ class table
         $ipinga = \ipinga\ipinga::getInstance();
         $this->clear();
         try {
-            $sql = 'delete from from ' . $this->tableName . ' where id = :id';
+            $sql = 'delete from ' . $this->tableName . ' where id = :id';
             $this->lastSql = $sql;
             $stmt = $ipinga->pdo()->prepare($sql);
             $stmt->bindParam(':id', $id);
