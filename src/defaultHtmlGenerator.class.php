@@ -129,7 +129,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         $varName = $this->echoCoreAttributes($theSettings);
         echo '>';
         echo $this->varValue($theSettings, $varName);
-        echo '</textarea>';
+        echo '</textarea>'. PHP_EOL;
 
         $this->echoHints($theSettings, $varName);
     }
@@ -172,7 +172,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             echo ' maxlength="' . $theSettings['maxlength'] . '"';
         }
 
-        echo '>';
+        echo '>'. PHP_EOL;
 
         $this->echoHints($theSettings, $varName);
     }
@@ -205,17 +205,17 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             if (isset($theSettings['selected'])) {
 
                 if (empty($theSettings['selected'])) {
-                    echo '<option value="" selected="selected">Select one...</option>';
+                    echo '<option value="" selected="selected">Select one...</option>'.PHP_EOL;
                 } else {
-                    echo '<option value="">Select one...</option>';
+                    echo '<option value="">Select one...</option>'. PHP_EOL;
                 }
 
             } else {
 
                 if (empty($theSettings['table']->$varName)) {
-                    echo '<option value="" selected="selected">Select one...</option>';
+                    echo '<option value="" selected="selected">Select one...</option>'. PHP_EOL;
                 } else {
-                    echo '<option value="">Select one...</option>';
+                    echo '<option value="">Select one...</option>'. PHP_EOL;
                 }
 
             }
@@ -236,10 +236,10 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
                 }
             }
 
-            echo '>' . $value . '</option>';
+            echo '>' . $value . '</option>'. PHP_EOL;
         }
 
-        echo '</select>';
+        echo '</select>'. PHP_EOL;
     }
 
     /**
@@ -260,7 +260,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
                 echo ' class="hint"';
             }
             $this->echoAttribute($theSettings, 'style');
-            echo '>' . $theSettings['hint'] . '</span>';
+            echo '>' . $theSettings['hint'] . '</span>'. PHP_EOL;
         }
     }
 
@@ -302,7 +302,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             }
         }
 
-        echo '>' . $theSettings['label'] . '</label>';
+        echo '>' . $theSettings['label'] . '</label>'. PHP_EOL;
     }
 
 
