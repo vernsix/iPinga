@@ -30,7 +30,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
     public function defaults($settings)
     {
-        $this->defaults = $settings;
+        $this->defaultSettings = $settings;
     }
 
     /**
@@ -267,6 +267,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
     public function label($settings)
     {
+        $theSettings = array_merge($this->defaultSettings,$settings);
         echo '<label';
 
         if (isset($theSettings['name'])) {
