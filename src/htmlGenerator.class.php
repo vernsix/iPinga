@@ -29,6 +29,22 @@ Abstract Class htmlGenerator
 {
 
     /**
+     * @var array
+     */
+    public $defaultSettings = array();
+
+    /**
+     * @param $settings
+     *
+     * @return mixed
+     */
+    abstract public function defaults($settings);
+
+
+
+
+
+    /**
      * @param $settings array
      * @param $attrName string
      *
@@ -85,6 +101,8 @@ Abstract Class htmlGenerator
      * @return null
      */
     abstract public function label($settings);
+
+
 
 }
 
