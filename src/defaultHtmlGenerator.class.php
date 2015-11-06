@@ -345,7 +345,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         // ok... give up and take it from whatever database it was supposed to be in
         if (!isset($value)) {
-            $value = $settings['table']->$theSettings['field_name'];
+            $value = $theSettings['table']->$theSettings['field_name'];
         }
 
         return $value;
