@@ -93,9 +93,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         $theSettings = array_merge($this->defaultSettings,$settings);
 
         // did the developer provide a specific hint?
-        if (isset($theSettings['hint'])) {
-            $this->hint($theSettings['hint']);
-        }
+        $this->hint($theSettings);
 
         // regardless if a specific hint, should we display one based on the $vars model in the template?
         if (isset($theSettings['showhints']) && ($theSettings['showhints'] == true)) {
@@ -132,6 +130,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         echo '</textarea>'. PHP_EOL;
 
         $this->echoHints($theSettings, $varName);
+        $this->clearAtEnd($theSettings);
     }
 
 
@@ -175,6 +174,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         echo '>'. PHP_EOL;
 
         $this->echoHints($theSettings, $varName);
+        $this->clearAtEnd($theSettings);
     }
 
     /**
@@ -240,6 +240,8 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         }
 
         echo '</select>'. PHP_EOL;
+        $this->clearAtEnd($theSettings);
+
     }
 
     /**
@@ -250,17 +252,31 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     public function hint($settings)
     {
         $theSettings = array_merge($this->defaultSettings,$settings);
+
+        // this is hokey, but it should keep things lined up when labels are left of input cells.
+        if (isset($theSettings['label'])) {
+            $this->label(array_merge($theSettings,array('label'=>'')));
+        }
+
+
         if (isset($theSettings['hint']) && (!empty($theSettings['hint']))) {
             echo '<span';
-            $this->echoAttribute($theSettings, 'name');
-            $this->echoAttribute($theSettings, 'id');
+            // $this->echoAttribute($theSettings, 'name');
+            // $this->echoAttribute($theSettings, 'id');
             if (isset($theSettings['class'])) {
                 echo ' class="' . $theSettings['class'] . '"';
             } else {
                 echo ' class="hint"';
             }
-            $this->echoAttribute($theSettings, 'style');
+            if (isset($theSettings['hint_style'])) {
+                echo ' style="' . $theSettings['hint_style'] . '"';
+            } else {
+                $this->echoAttribute($theSettings, 'style');
+            }
+
             echo '>' . $theSettings['hint'] . '</span>'. PHP_EOL;
+            $this->clearAtEnd($theSettings);
+
         }
     }
 
@@ -303,20 +319,22 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         }
 
         echo '>' . $theSettings['label'] . '</label>'. PHP_EOL;
+        $this->clearAtEnd($theSettings);
+
     }
 
 
-    protected function varValue($settings, $varName)
+    protected function varValue($theSettings, $varName)
     {
 
         // was it specifically set?
-        if (isset($settings['value'])) {
-            $value = $settings['value'];
+        if (isset($theSettings['value'])) {
+            $value = $theSettings['value'];
         };
 
         // is it in the $_POST array?
         if (!isset($value)) {
-            if (isset($settings['checkpostvars']) && ($settings['checkpostvars'] == true)) {
+            if (isset($theSettings['checkpostvars']) && ($theSettings['checkpostvars'] == true)) {
                 if (isset($_POST[$varName])) {
                     $value = $_POST[$varName];
                 }
@@ -325,7 +343,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         // is it in the template array?
         if (!isset($value)) {
-            if (isset($settings['checktemplatevars']) && ($settings['checktemplatevars'] == true)) {
+            if (isset($theSettings['checktemplatevars']) && ($theSettings['checktemplatevars'] == true)) {
                 if (isset(template::getInstance()->vars[$varName]) == true) {
                     $value = template::getInstance()->vars[$varName];
                 }
@@ -334,12 +352,20 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         // ok... give up and take it from whatever database it was supposed to be in
         if (!isset($value)) {
-            $value = $settings['table']->$settings['field_name'];
+            $value = $settings['table']->$theSettings['field_name'];
         }
 
         return $value;
 
     }
+
+    protected function clearAtEnd($theSettings)
+    {
+        if ( (isset($theSettings['clearAtEnd'])==true) && ($theSettings['clearAtEnd']==true) ) {
+            echo '<div style="clear: both;"></div>'. PHP_EOL;
+        }
+    }
+
 
 }
 
