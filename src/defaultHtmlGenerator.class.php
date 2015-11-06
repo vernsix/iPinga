@@ -313,7 +313,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         }
 
         echo '>' . $theSettings['label'] . '</label>'. PHP_EOL;
-        $this->clearAtEnd($theSettings);
 
     }
 
