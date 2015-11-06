@@ -253,12 +253,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     {
         $theSettings = array_merge($this->defaultSettings,$settings);
 
-        // this is hokey, but it should keep things lined up when labels are left of input cells.
-        if (isset($theSettings['label'])) {
-            $this->label(array_merge($theSettings,array('label'=>'')));
-        }
-
-
         if (isset($theSettings['hint']) && (!empty($theSettings['hint']))) {
             echo '<span';
             // $this->echoAttribute($theSettings, 'name');
