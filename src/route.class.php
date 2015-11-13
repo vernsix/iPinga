@@ -115,8 +115,8 @@ class route
 
                 $middlewareFile = $ipinga->config('path.middleware') . '/' . $mw . '.middleware.php';
 
-                // include the controller
-                include $middlewareFile;
+                // include the middleware
+                require_once $middlewareFile;
 
                 // a new controller class instance
                 $class = $mw . 'Middleware';
