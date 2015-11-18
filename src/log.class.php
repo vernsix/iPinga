@@ -31,12 +31,20 @@ class log
     public static $instanceName;
     public static $threshold = 0;
 
-    public static function instanceName($newInstanceName = '')
+    public static function setThreshold($newThreshold)
     {
-        if (empty($newInstanceName) == true) {
-            self::$instanceName = (string)time();
-        } else {
+        $oldThreshold = self::$threshold;
+        self::$threshold = $newThreshold;
+        return $oldThreshold;
+    }
+
+    public static function instanceName($newInstanceName=null)
+    {
+        if (isset($newInstanceName)==true) {
             self::$instanceName = $newInstanceName;
+        }
+        if (isset(self::$instanceName)==false) {
+            self::$instanceName = (string)microtime(true); // (string)time();
         }
         return self::$instanceName;
     }

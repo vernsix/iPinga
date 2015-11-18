@@ -261,17 +261,21 @@ namespace {
             }
         }
 
+/*
+         $c = debug_backtrace(false);
+        \ipinga\log::debug(var_export($c,true));
+*/
 
         \ipinga\log::debug('autoload $className='. $className);
 
-
         // some devs name controllers differently
-        $filename = strtolower($className) . '.controller.php';
+
+        $filename = strtolower(substr($className, 0, strrpos($className, 'Controller'))) . '.controller.php';
 
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload $file='. $file);
+            \ipinga\log::debug('autoload (controller) $file='. $file);
             require_once $file;
             return true;
         }
@@ -282,7 +286,7 @@ namespace {
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload $file='. $file);
+            \ipinga\log::debug('autoload (class in controller directory) $file='. $file);
             require_once $file;
             return true;
         }
@@ -290,7 +294,7 @@ namespace {
         // some other class?
         $file = $ipinga->config('path.classes') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload $file='. $file);
+            \ipinga\log::debug('autoload (class) $file='. $file);
             require_once $file;
             return true;
         }
@@ -300,7 +304,7 @@ namespace {
 
         $file = $ipinga->config('path.models') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload $file='. $file);
+            \ipinga\log::debug('autoload (model) $file='. $file);
             require_once $file;
             return true;
         }
@@ -327,6 +331,7 @@ namespace {
 //        appSendMsgToVern('Error has occurred',$error);
 //        header( 'location:/fatal_error' );
             @ob_end_flush(); // output what is stored in the internal buffer  (may not want this here in production)
+            \ipinga\log::info(var_export($error,true));
             echo '<pre>' . var_export($error, true);
         //    v6_BackTrace();
             die('handleShutdown(): Cannot continue!');
@@ -338,10 +343,4 @@ namespace {
     register_shutdown_function('ipinga_shutdown');
 
 }
-
-
-
-
-
-
 

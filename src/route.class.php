@@ -33,10 +33,10 @@ class route
     public static function launchController($controller, $method, $params)
     {
         $ipinga = \ipinga\ipinga::getInstance();
-        $controllerFile = $ipinga->config('path.controllers') . '/' . $controller . '.controller.php';
+        // $controllerFile = $ipinga->config('path.controllers') . '/' . $controller . '.controller.php';
 
         // include the controller
-        include $controllerFile;
+        // include $controllerFile;
 
         // a new controller class instance
         $class = $controller . 'Controller';
@@ -65,6 +65,8 @@ class route
      */
     public function handled($route = '')
     {
+        \ipinga\log::debug('Route ('. $this->urlToMatch. ') checking to handle '. $route);
+
         $uriSegmentsInThisRoute = explode('/', $this->urlToMatch);
         $uriSegmentsInActualRoute = explode('/', $route);
 
@@ -86,6 +88,8 @@ class route
                         $params[] = $uriSegmentsInActualRoute[$i];
                     }
 
+                    \ipinga\log::debug('Route ('. $this->urlToMatch. ') fired!');
+
                     self::launchController($this->controller, $this->method, $params);
 
                     $this->fired = true;
@@ -93,11 +97,10 @@ class route
                     return true;
 
                 }
-
-
             }
         }
 
+        \ipinga\log::debug('Route ('. $this->urlToMatch. ') NOT fired!');
         return false;
 
     }
