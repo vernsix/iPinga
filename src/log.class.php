@@ -51,7 +51,7 @@ class log
             }
             $handle = fopen(self::$filename, 'a') or die("can't open file " . self::$filename);
             fseek($handle, 0, SEEK_END);
-            fwrite($handle, date("Y-m-d H:i:s") . " [ " . $type . " ] [" . self::$instanceName . "] " . $logMessage . "\r\n");
+            fwrite($handle, date("Y-m-d H:i:s") . " [" . $type . "] [" . self::instanceName() . "] " . $logMessage . "\r\n");
             fflush($handle);
             fclose($handle);
         }
