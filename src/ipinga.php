@@ -281,19 +281,21 @@ namespace {
             return true;
         }
 
-        // part of the application models?
-        $file = $ipinga->config('path.models') . '/' . $filename;
-        if (file_exists($file) == true) {
-            require_once $file;
-            return true;
-        }
-
         // some other class?
         $file = $ipinga->config('path.classes') . '/' . $filename;
         if (file_exists($file) == true) {
             require_once $file;
             return true;
         }
+
+        // part of the application models?
+        $filename = strtolower($className) . '.model.php';
+        $file = $ipinga->config('path.models') . '/' . $filename;
+        if (file_exists($file) == true) {
+            require_once $file;
+            return true;
+        }
+
 
         return false;
 
