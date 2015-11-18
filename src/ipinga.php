@@ -249,12 +249,14 @@ namespace {
     */
     function ipinga_autoload($className)
     {
+        \ipinga\log::debug('autoload $className='. $className);
 
         $ipinga = \ipinga\ipinga::getInstance();
 
         // is this something in the ipinga framework?
         if (strpos($className,'ipinga\\')===0) {
             $file = $ipinga->config('path.framework'). '/' . substr($className,7) . '.class.php';
+            \ipinga\log::debug('autoload $file='. $file);
             if (file_exists($file) == true) {
                 require_once $file;
                 return true;
@@ -267,6 +269,7 @@ namespace {
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
+            \ipinga\log::debug('autoload $file='. $file);
             require_once $file;
             return true;
         }
@@ -277,6 +280,7 @@ namespace {
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
+            \ipinga\log::debug('autoload $file='. $file);
             require_once $file;
             return true;
         }
@@ -284,6 +288,7 @@ namespace {
         // some other class?
         $file = $ipinga->config('path.classes') . '/' . $filename;
         if (file_exists($file) == true) {
+            \ipinga\log::debug('autoload $file='. $file);
             require_once $file;
             return true;
         }
@@ -293,6 +298,7 @@ namespace {
 
         $file = $ipinga->config('path.models') . '/' . $filename;
         if (file_exists($file) == true) {
+            \ipinga\log::debug('autoload $file='. $file);
             require_once $file;
             return true;
         }
