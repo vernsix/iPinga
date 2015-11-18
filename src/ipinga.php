@@ -290,6 +290,7 @@ namespace {
 
         // part of the application models?
         $filename = strtolower($className) . '.model.php';
+
         $file = $ipinga->config('path.models') . '/' . $filename;
         if (file_exists($file) == true) {
             require_once $file;
