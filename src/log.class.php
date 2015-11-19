@@ -29,7 +29,7 @@ class log
 {
     public static $filename = 'logfile.php';    // php extension so it can't be downloaded from web
     public static $instanceName;
-    public static $threshold = 0;
+    public static $threshold = 1;
 
     public static function setThreshold($newThreshold)
     {
