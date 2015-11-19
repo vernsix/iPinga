@@ -25,7 +25,7 @@ class validator
     public $queue = array();
 
     /**
-     * @param array $vars $_POST or $_GET normally
+     * @param array      $vars $_POST or $_GET normally
      * @param bool|false $setTemplateHints
      */
     public function __construct($vars, $setTemplateHints = false)
@@ -35,54 +35,51 @@ class validator
     }
 
 
-
-    public function queueTemplateHint( $varName, $hint )
+    public function queueTemplateHint($varName, $hint)
     {
-        $this->queue[] = array( 'TemplateHint', $varName, $hint );
+        $this->queue[] = array('TemplateHint', $varName, $hint);
     }
-    
-    public function setTemplateHint( $varName, $hint )
+
+    public function setTemplateHint($varName, $hint)
     {
-        if ($this->setTemplateHints==true) {
-            \ipinga\template::getInstance()->__set($varName.'_hint',$hint);
+        if ($this->setTemplateHints == true) {
+            \ipinga\template::getInstance()->__set($varName . '_hint', $hint);
         }
     }
 
 
-
     public function processQueue()
     {
-        foreach( $this->queue as $q )
-        {
+        foreach ($this->queue as $q) {
             $type = $q[0];
 
             switch ($type) {
                 case "number":
-                    $this->checkNumber( $q[1], $q[2], $q[3], $q[4], $q[5] );
+                    $this->checkNumber($q[1], $q[2], $q[3], $q[4], $q[5]);
                     break;
                 case "array":
-                    $this->checkArray( $q[1], $q[2], $q[3], $q[4] );
+                    $this->checkArray($q[1], $q[2], $q[3], $q[4]);
                     break;
                 case "string":
-                    $this->checkString( $q[1], $q[2], $q[3], $q[4], $q[5], $q[6] );
+                    $this->checkString($q[1], $q[2], $q[3], $q[4], $q[5], $q[6]);
                     break;
                 case "date":
-                    $this->checkDate( $q[1], $q[2], $q[3], $q[4], $q[5] );
+                    $this->checkDate($q[1], $q[2], $q[3], $q[4], $q[5]);
                     break;
                 case "time":
-                    $this->checkTime( $q[1], $q[2], $q[3], $q[4], $q[5] );
+                    $this->checkTime($q[1], $q[2], $q[3], $q[4], $q[5]);
                     break;
                 case "password":
-                    $this->checkPassword( $q[1], $q[2], $q[3], $q[4], $q[5], $q[6] );
+                    $this->checkPassword($q[1], $q[2], $q[3], $q[4], $q[5], $q[6]);
                     break;
                 case "match":
-                    $this->checkMatch( $q[1], $q[2], $q[3] );
+                    $this->checkMatch($q[1], $q[2], $q[3]);
                     break;
                 case "email":
-                    $this->checkMatch( $q[1], $q[2], $q[3] );
+                    $this->checkMatch($q[1], $q[2], $q[3]);
                     break;
                 case "TemplateHint":
-                    $this->setTemplateHint( $q[1], $q[2] );
+                    $this->setTemplateHint($q[1], $q[2]);
                     break;
             }
 
@@ -90,12 +87,9 @@ class validator
     }
 
 
-    
-    
-
-    public function queueNumber( $varName, $varDescrip, $min, $max, $required = true )
+    public function queueNumber($varName, $varDescrip, $min, $max, $required = true)
     {
-        $this->queue[] = array( 'number', $varName, $varDescrip, $min, $max, $required );
+        $this->queue[] = array('number', $varName, $varDescrip, $min, $max, $required);
     }
 
     function checkNumber($varName, $varDescrip, $min, $max, $required = true)
@@ -121,24 +115,19 @@ class validator
     }
 
 
-
-
-
-
-
-    public function queueArray( $varName,$varDescrip,$validChoices,$required=true )
+    public function queueArray($varName, $varDescrip, $validChoices, $required = true)
     {
-        $this->queue[] = array( 'array', $varName,$varDescrip,$validChoices,$required );
+        $this->queue[] = array('array', $varName, $varDescrip, $validChoices, $required);
     }
 
-    function checkArray($varName,$varDescrip,$validChoices,$required = true)
+    function checkArray($varName, $varDescrip, $validChoices, $required = true)
     {
         $message = '';
 
         // if it's required or if it's set and the length > 0
         if ($required == true || ((isset($this->vars[$varName])) && (strlen($this->vars[$varName]) > 0))) {
             if (isset($this->vars[$varName])) {
-                if (array_search($this->vars[$varName],$validChoices)===false) {
+                if (array_search($this->vars[$varName], $validChoices) === false) {
                     $message = $varDescrip . ' is invalid';
                 }
             } else {
@@ -152,13 +141,9 @@ class validator
     }
 
 
-
-
-
-
     function queueString($varName, $varDescrip, $minLength, $maxLength, $required = true, $regex = '/^[.!@&<>"=;$-_ 0-9a-zA-Z\f\n\r\t\']+$/')
     {
-        $this->queue[] = array( 'string', $varName, $varDescrip, $minLength, $maxLength, $required, $regex );
+        $this->queue[] = array('string', $varName, $varDescrip, $minLength, $maxLength, $required, $regex);
     }
 
     function checkString($varName, $varDescrip, $minLength, $maxLength, $required = true, $regex = '/^[.!@&<>"=;$-_ 0-9a-zA-Z\f\n\r\t\']+$/')
@@ -183,16 +168,10 @@ class validator
         }
     }
 
-    
-    
-    
-    
-    
-    
 
     function queueDate($varName, $varDescrip, $minDate, $maxDate, $required = true)
     {
-        $this->queue[] = array( 'date', $varName, $varDescrip, $minDate, $maxDate, $required );
+        $this->queue[] = array('date', $varName, $varDescrip, $minDate, $maxDate, $required);
     }
 
     function checkDate($varName, $varDescrip, $minDate, $maxDate, $required = true)
@@ -228,14 +207,9 @@ class validator
     }
 
 
-    
-    
-    
-    
-
     function queueTime($varName, $varDescrip, $minTime, $maxTime, $required = true)
     {
-        $this->queue[] = array( 'time', $varName, $varDescrip, $minTime, $maxTime, $required );
+        $this->queue[] = array('time', $varName, $varDescrip, $minTime, $maxTime, $required);
     }
 
     function checkTime($varName, $varDescrip, $minTime, $maxTime, $required = true)
@@ -264,12 +238,9 @@ class validator
     }
 
 
-
-
-
     function queuePassword($varName, $varDescrip, $minLength, $maxLength, $required = true, $strong = false)
     {
-        $this->queue[] = array( 'password', $varName, $varDescrip, $minLength, $maxLength, $required, $strong );
+        $this->queue[] = array('password', $varName, $varDescrip, $minLength, $maxLength, $required, $strong);
     }
 
     function checkPassword($varName, $varDescrip, $minLength, $maxLength, $required = true, $strong = false)
@@ -283,14 +254,9 @@ class validator
     }
 
 
-
-
-
-
-
     function queueMatch($varName1, $varName2, $varDescrip)
     {
-        $this->queue[] = array( 'match', $varName1, $varName2, $varDescrip );
+        $this->queue[] = array('match', $varName1, $varName2, $varDescrip);
     }
 
     function checkMatch($varName1, $varName2, $varDescrip)
@@ -298,19 +264,17 @@ class validator
         $message = '';
         if (($this->vars[$varName1] <> $this->vars[$varName2]) || (strlen($this->vars[$varName1]) <> strlen($this->vars[$varName2]))) {
             $message = $varDescrip . ' do not match.';
-        }
-        $this->SetTemplateHint($varName1, $message);
-        if (strlen($message) > 0) {
-            $this->message .= $message . '<br>';
+            $this->SetTemplateHint($varName1, $message);
+            if (strlen($message) > 0) {
+                $this->message .= $message . '<br>';
+            }
         }
     }
 
 
-
-
     function queueEmail($varName, $varDescrip, $required = true)
     {
-        $this->queue[] = array( 'email', $varName, $varDescrip, $required );
+        $this->queue[] = array('email', $varName, $varDescrip, $required);
     }
 
     function checkEmail($varName, $varDescrip, $required = true)
@@ -332,25 +296,6 @@ class validator
             $this->message .= $message . '<br>';
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
