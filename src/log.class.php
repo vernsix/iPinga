@@ -57,11 +57,15 @@ class log
             } else {
                 $type = 'UNKNOWN';
             }
-            $handle = fopen(self::$filename, 'a') or die("can't open file " . self::$filename);
-            fseek($handle, 0, SEEK_END);
-            fwrite($handle, date("Y-m-d H:i:s") . " [" . $type . "] [" . self::instanceName() . "] " . $logMessage . "\r\n");
-            fflush($handle);
-            fclose($handle);
+            try {
+                $handle = fopen(self::$filename, 'a');
+                fseek($handle, 0, SEEK_END);
+                fwrite($handle, date("Y-m-d H:i:s") . " [" . $type . "] [" . self::instanceName() . "] " . $logMessage . "\r\n");
+                fflush($handle);
+                fclose($handle);
+            } catch (\PDOException $e) {
+                die($e->getMessage());
+            }
         }
     }
 
