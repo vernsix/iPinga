@@ -203,11 +203,12 @@ namespace ipinga {
             if ($routeHandled===false) {
                 if (count($this->defaultRoute)==2) {
 
-                    if (isset($_GET['rt'])==false) {
+                    \ipinga\log::debug('Firing default route');
+                    //if (isset($_GET['rt'])==false) {
                         \ipinga\route::launchController($this->defaultRoute[0], $this->defaultRoute[1], array());
-                    } else {
-                        header('location: /');
-                    }
+                    //} else {
+                    //    header('location: /');
+                    //}
 
                 } else {
                     echo 'No route found!' . PHP_EOL;
