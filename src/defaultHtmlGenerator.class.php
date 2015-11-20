@@ -28,6 +28,23 @@ namespace ipinga;
 Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 {
 
+    public $postLikeArray = array();
+
+    public function __construct()
+    {
+        $this->postLikeArray = $_POST;
+    }
+
+    public function overridePostArray( $newVars = null )
+    {
+        $return = $this->postLikeArray;
+        if (isset($newVars)==true) {
+            $this->postLikeArray = $newVars;
+        }
+        return $return;
+    }
+
+
     public function defaults($settings)
     {
         $this->defaultSettings = $settings;
@@ -328,8 +345,8 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         // is it in the $_POST array?
         if (!isset($value)) {
             if (isset($theSettings['checkpostvars']) && ($theSettings['checkpostvars'] == true)) {
-                if (isset($_POST[$varName])) {
-                    $value = $_POST[$varName];
+                if (isset($this->postLikeArray[$varName])) {
+                    $value = $this->postLikeArray[$varName];
                 }
             }
         }
