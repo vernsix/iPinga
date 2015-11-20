@@ -74,7 +74,7 @@ class route
 
             $ThisUrlUpToFirstDollarSign = explode('$',$this->urlToMatch)[0];
 
-            if ($ThisUrlUpToFirstDollarSign == substr($route, 0, strlen($ThisUrlUpToFirstDollarSign))) {
+            if ( $ThisUrlUpToFirstDollarSign == substr($route,0,strlen(explode('$',$route)[0])) ) {
 
                 if ($this->processMiddleWare()==true) {
 
