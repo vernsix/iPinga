@@ -119,6 +119,7 @@ namespace ipinga {
             $this->configOptions['path.cwd'] = getcwd();    // Presumably the public_html folder
             $this->configOptions['path.framework'] = __DIR__;
             $this->configOptions['path.middleware'] = getcwd() . '/middleware';
+            $this->configOptions['path.interfaces'] = getcwd() . '/interfaces';
             $this->configOptions['path.models'] = getcwd() . '/models';
             $this->configOptions['path.views'] = getcwd() . '/views';
 
@@ -299,6 +300,18 @@ namespace {
             require_once $file;
             return true;
         }
+
+
+        // an interface?
+        $filename = strtolower($className) . '.interface.php';
+
+        $file = $ipinga->config('path.interfaces') . '/' . $filename;
+        if (file_exists($file) == true) {
+            \ipinga\log::debug('autoload (interface) $file='. $file);
+            require_once $file;
+            return true;
+        }
+
 
         // part of the application models?
         $filename = strtolower($className) . '.model.php';
