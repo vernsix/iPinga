@@ -67,7 +67,7 @@ class route
     {
         \ipinga\log::debug('Route ('. $this->urlToMatch. ') checking to handle '. $route);
 
-        $uriSegmentsInThisRoute = explode('/', $this->urlToMatch);
+        $uriSegmentsInThisRoute = array_filter(explode('/', $this->urlToMatch));
         $uriSegmentsInRequestedRoute = array_filter(explode('/', $route));
 
         \ipinga\log::debug('Route uriSegmentsInThisRoute = '. var_export($uriSegmentsInThisRoute,true));
