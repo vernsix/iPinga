@@ -68,24 +68,30 @@ class route
         \ipinga\log::debug('Route ('. $this->urlToMatch. ') checking to handle '. $route);
 
         $uriSegmentsInThisRoute = explode('/', $this->urlToMatch);
-        $uriSegmentsInActualRoute = explode('/', $route);
+        $uriSegmentsInRequestedRoute = array_filter(explode('/', $route));
 
-        if (count($uriSegmentsInActualRoute) == count($uriSegmentsInThisRoute)) {
+        \ipinga\log::debug('Route uriSegmentsInThisRoute = '. var_export($uriSegmentsInThisRoute,true));
+        \ipinga\log::debug('Route uriSegmentsInRequestedRoute = '. var_export($uriSegmentsInRequestedRoute,true));
 
-            $ThisUrlUpToFirstDollarSign = explode('$',$this->urlToMatch)[0];
 
-            if ( $ThisUrlUpToFirstDollarSign == substr($route,0,strlen(explode('$',$route)[0])) ) {
+
+        if (count($uriSegmentsInRequestedRoute) == count($uriSegmentsInThisRoute)) {
+
+            $thisUrlUpToFirstDollarSign = explode('$',$this->urlToMatch)[0];
+            $thisRouteUpToFirstDollarSign = substr($route,0,strlen($thisUrlUpToFirstDollarSign));
+
+            if ( $thisUrlUpToFirstDollarSign == $thisRouteUpToFirstDollarSign ) {
 
                 if ($this->processMiddleWare()==true) {
 
                     // have to explode these two again, in case middleware changed anything
                     $uriSegmentsInThisRoute = explode('/',$this->urlToMatch);
-                    $uriSegmentsInActualRoute = explode('/', $route);
+                    $uriSegmentsInRequestedRoute = explode('/', $route);
 
                     $NumberOfParams = count(explode('$',$this->urlToMatch)) - 1;
                     $params = array();
                     for ($i = count($uriSegmentsInThisRoute) - $NumberOfParams; $i < count($uriSegmentsInThisRoute); $i++) {
-                        $params[] = $uriSegmentsInActualRoute[$i];
+                        $params[] = $uriSegmentsInRequestedRoute[$i];
                     }
 
                     \ipinga\log::debug('Route ('. $this->urlToMatch. ') fired!');
@@ -96,8 +102,16 @@ class route
 
                     return true;
 
+                } else {
+                    \ipinga\log::debug('Route (RH003) middcleware refused');
+
                 }
+            } else {
+                \ipinga\log::debug('Route (RH002) not same up to first dollar sign ('.  $thisUrlUpToFirstDollarSign . '|'. $thisRouteUpToFirstDollarSign .')');
             }
+
+        } else {
+            \ipinga\log::debug('Route (RH001) segment counts not the same');
         }
 
         \ipinga\log::debug('Route ('. $this->urlToMatch. ') NOT fired!');
@@ -135,6 +149,7 @@ class route
 
         }
 
+        \ipinga\log::debug('middleware '. $this->middleware. ' is returning '. $result);
         return $result;
 
     }
