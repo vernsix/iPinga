@@ -59,6 +59,12 @@ class log
             }
             try {
                 $handle = fopen(self::$filename, 'a');
+
+                if (!$handle) {
+                    throw new \PDOException('Failed to open file');
+                }
+
+
                 fseek($handle, 0, SEEK_END);
                 fwrite($handle, date("Y-m-d H:i:s") . " [" . $type . "] [" . self::instanceName() . "] " . $logMessage . "\r\n");
                 fflush($handle);
