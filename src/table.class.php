@@ -103,12 +103,40 @@ class table
     {
         /** @var boolean $success */
         if ($this->field['id'] > 0) {
-            $success = $this->_Update();
+
+            if ($this->recordExists($this->field['id']) == true) {
+                $success = $this->_Update();
+            } else {
+                $success = $this->_Insert();
+            }
+
         } else {
             $success = $this->_Insert();
         }
         return $success;
     }
+
+
+    private function recordExists($id)
+    {
+        $found = false;
+        try {
+            $sql = 'select count(*) as num_rows from ' . $this->tableName . ' where id = :id';
+            $this->lastSql = $sql;
+            $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $this->sqlParams = array('id' => $id);
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($row['num_rows'] > 0) {
+                $found = true;
+            }
+        } catch (\PDOException $e) {
+            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+        }
+        return $found;
+    }
+
 
     private function _Update()
     {
@@ -244,7 +272,7 @@ class table
             $this->lastSql = $sql;
             $stmt = $ipinga->pdo()->prepare($sql);
             $stmt->bindParam(':id', $id);
-            $this->sqlParams = array('id' => $id );
+            $this->sqlParams = array('id' => $id);
             $stmt->execute();
         } catch (\PDOException $e) {
             echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
@@ -319,7 +347,7 @@ class table
             $this->lastSql = $sql;
             $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
             $stmt->bindParam(':desired_value', $desiredValue);
-            $this->sqlParams = array('desired_value'=>$desiredValue);
+            $this->sqlParams = array('desired_value' => $desiredValue);
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
             echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
