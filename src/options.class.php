@@ -35,7 +35,7 @@ class options
         `option_name` varchar(100) NOT NULL,
         `option_value` varchar(2048) NOT NULL,
         PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+    ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
     */
 
