@@ -224,9 +224,9 @@ namespace ipinga {
          * @param      $method
          * @param null $middleware
          */
-        public function addRoute($urlToMatch,$controller,$method,$middleware=null)
+        public function addRoute($urlToMatch,$controller,$method,$middleware=null,$identifier='')
         {
-            $this->routes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware);
+            $this->routes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware,$identifier);
         }
 
         /**
