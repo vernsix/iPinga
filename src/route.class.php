@@ -29,6 +29,11 @@ class route
      */
     public $middleware = '';
 
+    /**
+     * @var string
+     */
+    public $identifier = '';
+
 
     public static function launchController($controller, $method, $params)
     {
@@ -47,12 +52,13 @@ class route
     }
 
 
-    public function __construct($urlToMatch, $controller, $method, $middleware = null)
+    public function __construct($urlToMatch, $controller, $method, $middleware = null, $identifier='')
     {
         $this->urlToMatch = $urlToMatch;
         $this->controller = $controller;
         $this->method = $method;
         $this->middleware = $middleware;
+        $this->identifier = $identifier;
     }
 
 
@@ -65,15 +71,13 @@ class route
      */
     public function handled($route = '')
     {
-        \ipinga\log::debug('Route ('. $this->urlToMatch. ') checking to handle '. $route);
+        \ipinga\log::debug('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') checking to handle '. $route);
 
         $uriSegmentsInThisRoute = array_filter(explode('/', $this->urlToMatch));
         $uriSegmentsInRequestedRoute = array_filter(explode('/', $route));
 
-        \ipinga\log::debug('Route uriSegmentsInThisRoute = '. var_export($uriSegmentsInThisRoute,true));
-        \ipinga\log::debug('Route uriSegmentsInRequestedRoute = '. var_export($uriSegmentsInRequestedRoute,true));
-
-
+        \ipinga\log::debug('Route {'. $this->identifier .'} uriSegmentsInThisRoute = '. var_export($uriSegmentsInThisRoute,true));
+        \ipinga\log::debug('Route {'. $this->identifier .'} uriSegmentsInRequestedRoute = '. var_export($uriSegmentsInRequestedRoute,true));
 
         if (count($uriSegmentsInRequestedRoute) == count($uriSegmentsInThisRoute)) {
 
@@ -94,7 +98,7 @@ class route
                         $params[] = $uriSegmentsInRequestedRoute[$i];
                     }
 
-                    \ipinga\log::debug('Route ('. $this->urlToMatch. ') fired!');
+                    \ipinga\log::info('Route  {'. $this->identifier .'} ('. $this->urlToMatch. ') fired!');
 
                     self::launchController($this->controller, $this->method, $params);
 
@@ -103,18 +107,18 @@ class route
                     return true;
 
                 } else {
-                    \ipinga\log::debug('Route (RH003) middcleware refused');
+                    \ipinga\log::debug('Route {'. $this->identifier .'} (RH003) middcleware refused');
 
                 }
             } else {
-                \ipinga\log::debug('Route (RH002) not same up to first dollar sign ('.  $thisUrlUpToFirstDollarSign . '|'. $thisRouteUpToFirstDollarSign .')');
+                \ipinga\log::debug('Route {'. $this->identifier .'} (RH002) not same up to first dollar sign ('.  $thisUrlUpToFirstDollarSign . '|'. $thisRouteUpToFirstDollarSign .')');
             }
 
         } else {
-            \ipinga\log::debug('Route (RH001) segment counts not the same');
+            \ipinga\log::debug('Route  {'. $this->identifier .'} (RH001) segment counts not the same');
         }
 
-        \ipinga\log::debug('Route ('. $this->urlToMatch. ') NOT fired!');
+        \ipinga\log::info('Route  {'. $this->identifier .'} ('. $this->urlToMatch. ') NOT fired!');
         return false;
 
     }
