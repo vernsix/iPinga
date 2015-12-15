@@ -98,7 +98,7 @@ class route
                         $params[] = $uriSegmentsInRequestedRoute[$i];
                     }
 
-                    \ipinga\log::info('Route  {'. $this->identifier .'} ('. $this->urlToMatch. ') fired!');
+                    \ipinga\log::info('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') fired!');
 
                     self::launchController($this->controller, $this->method, $params);
 
@@ -115,10 +115,10 @@ class route
             }
 
         } else {
-            \ipinga\log::debug('Route  {'. $this->identifier .'} (RH001) segment counts not the same');
+            \ipinga\log::debug('Route {'. $this->identifier .'} (RH001) segment counts not the same');
         }
 
-        \ipinga\log::info('Route  {'. $this->identifier .'} ('. $this->urlToMatch. ') NOT fired!');
+        \ipinga\log::debug('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') NOT fired!');
         return false;
 
     }
