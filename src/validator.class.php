@@ -146,7 +146,7 @@ class validator
         $this->queue[] = array('string', $varName, $varDescrip, $minLength, $maxLength, $required, $regex);
     }
 
-    function checkString($varName, $varDescrip, $minLength, $maxLength, $required = true, $regex = '/^[.!@&<>"=;$-_ 0-9a-zA-Z\f\n\r\t\']+$/')
+    function checkString($varName, $varDescrip, $minLength, $maxLength, $required = true, $regex = '/^[.!@&<>"=;$-_ 0-9a-zA-Z\f\n\r\t\']+$/', $regexHint = '')
     {
         $message = '';
         if ($required == true || ((isset($this->vars[$varName])) && (strlen($this->vars[$varName]) > 0))) {
@@ -159,7 +159,12 @@ class validator
             } elseif (strlen($this->vars[$varName]) > $maxLength) {
                 $message = $varDescrip . ' is too long.';
             } elseif (!preg_match($regex, $this->vars[$varName])) {
-                $message = $varDescrip . ' contains invalid characters.';
+
+                if (empty($regexHint)==true) {
+                    $message = $varDescrip . ' contains invalid characters.';
+                } else {
+                    $message = $regexHint;
+                }
             }
         }
         $this->SetTemplateHint($varName, $message);
