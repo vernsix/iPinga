@@ -7,117 +7,130 @@ require_once '/usr/share/php/Mail/mime.php';
 /*
 Example:
 
-        $m = new v6_email();
-        $m->from = "Vern Six <no-reply@vernsix.com>";
-        $m->receipients[] = "Vern Six <vern@vernsix.com>";
-        $m->receipients[] = "vernsix@gmail.com";
-        $m->subject = 'test message';
-        $m->html_body = '<b>This is a test</b>';
-        $m->text_body = 'this is silly';
-        $m->send();
-        echo '<pre>';
-        echo var_export($m, true) . "\r\n";
-        echo '</pre>';
+    \ipinga\email::$host = 'smtp.example.com';
+    \ipinga\email::$port = 587;
+    \ipinga\email::$auth = true;
+    \ipinga\email::$username = 'you@example.com';
+    \ipinga\email::$password = 'your_password';
+    \ipinga\email::$localhost = 'example.com';
+    \ipinga\email::$timeout = 15;
+    \ipinga\email::$debug = false;
 
+    \ipinga\email::$from = 'Your Name <you@example.com>';
+    \ipinga\email::$recipients[] = 'Joe Blow <joe@blow.com>';
+    \ipinga\email::$recipients[] = 'Sister Tammy <tammy@somewhere.com>';
+    \ipinga\email::$bcc[] = 'you@example.com';
+    \ipinga\email::$subject = 'The subject goes here';
+    \ipinga\email::$textBody = 'This is the text body';
+    \ipinga\email::$htmlBody = 'This is <b>the HTML</b> body';
+
+    \ipinga\email::send();
 */
 
 class email
 {
-
-    /** @var array */
-    public $receipients = array();
-
-    /** @var array */
-    public $bcc = array();
-
-    /** @var array */
-    public $headers = array();
-
-    /** @var string */
-    public $from = ''; // format: "Vern Six <vern@vernsix.com>"
-
-    /** @var string */
-    public $subject = '';
+    /*
+    host            - The server to connect. Default is localhost.
+    port            - The port to connect. Default is 25.
+    auth            - Whether or not to use SMTP authentication. Default is FALSE.
+    username        - The username to use for SMTP authentication.
+    password        - The password to use for SMTP authentication.
+    localhost       - The value to give when sending EHLO or HELO. Default is localhost
+    timeout         - The SMTP connection timeout. Default is 15 (15 seconds)
+    verp            - Whether to use VERP or not. Default is FALSE.
+    debug           - Whether to enable SMTP debug mode or not. Default is FALSE. Mail internally uses Net_SMTP::setDebug .
+    persist         - Indicates whether or not the SMTP connection should persist over multiple calls to the send() method.
+    pipelining      - Indicates whether or not the SMTP commands pipelining should be used.
+    */
 
     /** @var string */
-    public $now = '';
-
-    /** @var array */
-    public $attachments = array(); // format: [ $filename => $type, etc ]
-
-    /** @var string */
-    public $html_body = '';
-
-    /** @var string */
-    public $text_body = '';
+    public static $host = 'localhost';
 
     /** @var int */
-    public $error = 0;
-
-    /** @var string */
-    public $error_msg = '';
-
-    /** @var string */
-    public $pear_message = '';
+    public static $port = 25;
 
     /** @var bool */
-    public $retval = false;
+    public static $auth = false;
 
-    /*
-        host            - The server to connect. Default is localhost.
-        port            - The port to connect. Default is 25.
-        auth            - Whether or not to use SMTP authentication. Default is FALSE.
-        username        - The username to use for SMTP authentication.
-        password        - The password to use for SMTP authentication.
-        localhost       - The value to give when sending EHLO or HELO. Default is localhost
-        timeout         - The SMTP connection timeout. Default is NULL (no timeout).
-        verp            - Whether to use VERP or not. Default is FALSE.
-        debug           - Whether to enable SMTP debug mode or not. Default is FALSE. Mail internally uses Net_SMTP::setDebug .
-        persist         - Indicates whether or not the SMTP connection should persist over multiple calls to the send() method.
-        pipelining      - Indicates whether or not the SMTP commands pipelining should be used.
-    */
-    public $host = 'localhost';
-    public $port = 25;
-    public $auth = false;
-    public $username = '';
-    public $password ='';
-    public $localhost = 'localhost';
-    public $timeout = null;
-    public $verp = false;
-    public $debug = false;
-    public $persist;
-    public $pipelining;
+    /** @var string */
+    public static $username = '';
 
-    function send()
+    /** @var string */
+    public static $password ='';
+
+    /** @var string */
+    public static $localhost = 'localhost';
+
+    /** @var int */
+    public static $timeout = 15;
+
+    /** @var bool */
+    public static $verp;
+
+    /** @var bool */
+    public static $debug = false;
+
+    /** @var  bool */
+    public static $persist;
+
+    /** @var bool */
+    public static $pipelining;
+
+
+
+    /** @var string */
+    public static $now = '';
+
+    /** @var array */
+    public static $headers = array();
+
+    /** @var string */
+    public static $from = ''; // format: "Vern Six <vern@vernsix.com>"
+
+    /** @var array */
+    public static $recipients = array();
+
+    /** @var array */
+    public static $bcc = array();
+
+    /** @var string */
+    public static $subject = '';
+
+    /** @var string */
+    public static $textBody = '';
+
+    /** @var string */
+    public static $htmlBody = '';
+
+    /** @var array */
+    public static $attachments = array(); // format: [ $filename => $type, etc ]
+
+
+    /** @var int */
+    public static $error = false;
+
+    /** @var string */
+    public static $errorMessage = '';
+
+    /** @var string */
+    public static $pearMessage = '';
+
+
+    public static function send()
     {
+        self::$now = date('D, d M Y H:i:s O (T)');
+        self::$headers['From'] = self::$from;
+        self::$headers['Date'] = self::$now;
 
-        $smtp = array(
-            'host' => gethostbyname($this->host),
-            'port' => $this->port,
-            'auth' => $this->auth,
-            'username' => $this->username,
-            'password' => $this->password,
-            'localhost' => $this->localhost,
-            'timeout' => $this->timeout,
-            'verp' => $this->verp,
-            'debug' => $this->debug,
-            'persist' => $this->persist,
-            'pipelining' => $this->pipelining
-        );
-
-        $this->now = date('D, d M Y H:i:s O (T)');
-        $this->headers['From'] = $this->from;
-        $this->headers['Date'] = $this->now;
-        $this->headers['To'] = '';
-
-        foreach ($this->receipients as $r) {
-            if ($this->headers['To'] <> '') {
-                $this->headers['To'] = $this->headers['To'] . ', ';
+        self::$headers['To'] = '';
+        foreach (self::$recipients as $r) {
+            if (self::$headers['To'] <> '') {
+                self::$headers['To'] .= ', ';
             }
-            $this->headers['To'] = $this->headers['To'] . $r . ' ';
+            self::$headers['To'] .= $r . ' ';
         }
 
-        $this->headers['Subject'] = $this->subject;
+        self::$headers['Subject'] = self::$subject;
 
         $mime_params = array();
         /*
@@ -134,14 +147,14 @@ class email
         */
         $mime_params['eol'] = "\n";
 
-        $mime = new Mail_mime($mime_params);
+        $mime = new \Mail_mime($mime_params);
 
         // never try to call these lines in reverse order!!  Bad things happen!!
-        $mime->setTXTBody($this->text_body); // must call first
-        $mime->setHTMLBody($this->html_body); // must call second
+        $mime->setTXTBody( self::$textBody ); // must call first
+        $mime->setHTMLBody( self::$htmlBody ); // must call second
 
         // must add attachments AFTER setting the bodies (above)
-        foreach ($this->attachments as $filename => $type) {
+        foreach (  self::$attachments as $filename => $type) {
             $mime->addAttachment($filename, $type);
         }
 
@@ -150,64 +163,65 @@ class email
         //$getparams["text_encoding"] = '8bit';
         //$b = $mime->get($getparams);
         $mime_body = $mime->get(); // Tell mime to build the message and get the results
-        $mime_hdr = $mime->headers($this->headers);
 
-        $smtp = Mail::factory('smtp', $smtp);
+        $mime_hdr = $mime->headers(self::$headers);
 
-        if (count($this->bcc)>0) {
-            $smtp->send($this->bcc, $mime_hdr, $mime_body);
+        $smtpServerDetails = array(
+            'host' => gethostbyname(self::$host),
+            'port' => self::$port,
+            'auth' => self::$auth,
+            'username' => self::$username,
+            'password' => self::$password,
+            'localhost' => self::$localhost,
+            'timeout' => self::$timeout,
+            'debug' => self::$debug,
+        );
+
+        // the precense of these three causes problems on some smtp hosts.  Therefore, I don't set them unless they are
+        // specifically set
+        if (isset(self::$verp)==true) {
+            $smtpServerDetails['verp'] = self::$verp;
+        }
+        if (isset(self::$persist)==true) {
+            $smtpServerDetails['persist'] = self::$persist;
+        }
+        if (isset(self::$pipelining)==true) {
+            $smtpServerDetails['pipelining'] = self::$pipelining;
         }
 
+
+
+
+        $smtp = \Mail::factory('smtp', $smtpServerDetails);
+
+        if (count(self::$bcc)>0) {
+            $smtp->send(self::$bcc, $mime_hdr, $mime_body);
+        }
+
+        $result = false;
         try {
-            $result = $smtp->send($this->receipients, $mime_hdr, $mime_body);
-            error_log(serialize($result));
-        } catch (Exception $e) {
+            $result = $smtp->send(self::$recipients, $mime_hdr, $mime_body);
+//            error_log(serialize($result));
+        } catch (\Exception $e) {
             echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
 
         if ($result === true) {
-            $this->retval = true;
-            $this->error = false;
-            $this->error_msg = '';
-
-            $this->pear_message = '';
+            self::$error = false;
+            self::$errorMessage = '';
+            self::$pearMessage = '';
         } else {
-            $this->retval = false;
-            $this->error = true;
-            $this->error_msg = serialize($result);
-            if (PEAR::isError($result)) {
-                $this->pear_message = $result->getMessage();
+            self::$error = true;
+            self::$errorMessage = serialize($result);
+            if (\PEAR::isError($result)) {
+                self::$pearMessage = $result->getMessage();
+            } else {
+                self::$pearMessage = '';
             }
         }
-        return $this->retval;
+        return $result;
     }
 
 }
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
