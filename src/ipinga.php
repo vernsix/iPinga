@@ -123,6 +123,8 @@ namespace ipinga {
             $this->configOptions['path.models'] = getcwd() . '/models';
             $this->configOptions['path.views'] = getcwd() . '/views';
 
+            $this->configOptions['logfile'] = getcwd() . '/logfile.php';
+
             $this->configOptions['time.timezone'] = 'America/Chicago';
             // php acts stupid without setting the timezone
             date_default_timezone_set($this->configOptions['time.timezone']);

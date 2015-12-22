@@ -27,7 +27,7 @@ namespace ipinga;
 
 class log
 {
-    public static $filename = 'logfile.php';    // php extension so it can't be downloaded from web
+    public static $filename;
     public static $instanceName;
     public static $threshold = 1;
 
@@ -58,12 +58,16 @@ class log
                 $type = 'UNKNOWN';
             }
             try {
+
+                if (isset(self::$filename)==false) {
+                    self::$filename = \ipinga\ipinga::getInstance()->config('logfile');
+                }
+
                 $handle = fopen(self::$filename, 'a');
 
                 if (!$handle) {
-                    throw new \PDOException('Failed to open file');
+                    throw new \PDOException('Failed to open file '. self::$filename);
                 }
-
 
                 fseek($handle, 0, SEEK_END);
                 fwrite($handle, date("Y-m-d H:i:s") . " [" . $type . "] [" . self::instanceName() . "] " . $logMessage . "\r\n");
