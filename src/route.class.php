@@ -65,32 +65,38 @@ class route
     /**
      * See if the url can be handled by this route
      *
-     * @param string $route
+     * @param string $rt
      *
      * @return bool
      */
-    public function handled($route = '')
+    public function handled($rt = '')
     {
-        \ipinga\log::debug('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') checking to handle '. $route);
+        \ipinga\log::debug('(RH1) Route {'. $this->identifier .'} ('. $this->urlToMatch. ') checking to handle '. $rt);
 
-        $uriSegmentsInThisRoute = array_filter(explode('/', $this->urlToMatch));
-        $uriSegmentsInRequestedRoute = array_filter(explode('/', $route));
-
-        \ipinga\log::debug('Route {'. $this->identifier .'} uriSegmentsInThisRoute = '. var_export($uriSegmentsInThisRoute,true));
-        \ipinga\log::debug('Route {'. $this->identifier .'} uriSegmentsInRequestedRoute = '. var_export($uriSegmentsInRequestedRoute,true));
+        $uriSegmentsInThisRoute = explode('/', $this->urlToMatch);
+        $uriSegmentsInRequestedRoute = explode('/', $rt);
 
         if (count($uriSegmentsInRequestedRoute) == count($uriSegmentsInThisRoute)) {
 
             $thisUrlUpToFirstDollarSign = explode('$',$this->urlToMatch)[0];
-            $thisRouteUpToFirstDollarSign = substr($route,0,strlen($thisUrlUpToFirstDollarSign));
+            $numberOfSegmentsUpToFirstDollarSign = count( explode('/',$thisUrlUpToFirstDollarSign) );
 
-            if ( $thisUrlUpToFirstDollarSign == $thisRouteUpToFirstDollarSign ) {
+            $theyMatch = true;
+            for( $i=0; $i<$numberOfSegmentsUpToFirstDollarSign; $i++ ) {
+                if ( strcmp($uriSegmentsInThisRoute[$i],$uriSegmentsInRequestedRoute[$i]) <> 0 ) {
+                    \ipinga\log::debug('(RH2) Segments did not match: '. $i. ' -- '. $uriSegmentsInThisRoute[$i] .' -- '. $uriSegmentsInRequestedRoute[$i] );
+                    $theyMatch = false;
+                    break;
+                }
+            }
+
+            if ( $theyMatch ) {
 
                 if ($this->processMiddleWare()==true) {
 
                     // have to explode these two again, in case middleware changed anything
                     $uriSegmentsInThisRoute = explode('/',$this->urlToMatch);
-                    $uriSegmentsInRequestedRoute = explode('/', $route);
+                    $uriSegmentsInRequestedRoute = explode('/', $rt);
 
                     $NumberOfParams = count(explode('$',$this->urlToMatch)) - 1;
                     $params = array();
@@ -98,27 +104,24 @@ class route
                         $params[] = $uriSegmentsInRequestedRoute[$i];
                     }
 
-                    \ipinga\log::info('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') fired!');
-
+                    \ipinga\log::info('(RH3) Route {'. $this->identifier .'} ('. $this->urlToMatch. ') fired!');
                     self::launchController($this->controller, $this->method, $params);
+                    \ipinga\log::debug('(RH4) Route {'. $this->identifier .'} ('. $this->urlToMatch. ') back from controller');
 
                     $this->fired = true;
-
                     return true;
 
                 } else {
-                    \ipinga\log::debug('Route {'. $this->identifier .'} (RH003) middcleware refused');
-
+                    \ipinga\log::debug('(RH5) Route {'. $this->identifier .'} middcleware refused');
                 }
-            } else {
-                \ipinga\log::debug('Route {'. $this->identifier .'} (RH002) not same up to first dollar sign ('.  $thisUrlUpToFirstDollarSign . '|'. $thisRouteUpToFirstDollarSign .')');
+
             }
 
         } else {
-            \ipinga\log::debug('Route {'. $this->identifier .'} (RH001) segment counts not the same');
+            \ipinga\log::debug('(RH5) Route {'. $this->identifier .'} segment counts not the same');
         }
 
-        \ipinga\log::debug('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') NOT fired!');
+        \ipinga\log::debug('(RH7) Route {'. $this->identifier .'} ('. $this->urlToMatch. ') NOT fired!');
         return false;
 
     }
