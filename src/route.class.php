@@ -76,10 +76,16 @@ class route
         $uriSegmentsInThisRoute = explode('/', $this->urlToMatch);
         $uriSegmentsInRequestedRoute = explode('/', $rt);
 
+        \ipinga\log::debug('(RH8) $uriSegmentsInThisRoute == '. var_export($uriSegmentsInThisRoute,true));
+        \ipinga\log::debug('(RH9) $uriSegmentsInRequestedRoute == '. var_export($uriSegmentsInRequestedRoute,true));
+
         if (count($uriSegmentsInRequestedRoute) == count($uriSegmentsInThisRoute)) {
 
-            $thisUrlUpToFirstDollarSign = explode('$',$this->urlToMatch)[0];
+            $thisUrlUpToFirstDollarSign = explode('/$',$this->urlToMatch)[0];
+            \ipinga\log::debug('(RH10) $thisUrlUpToFirstDollarSign == '. var_export($thisUrlUpToFirstDollarSign,true));
+
             $numberOfSegmentsUpToFirstDollarSign = count( explode('/',$thisUrlUpToFirstDollarSign) );
+            \ipinga\log::debug('(RH11) $numberOfSegmentsUpToFirstDollarSign == '. $numberOfSegmentsUpToFirstDollarSign);
 
             $theyMatch = true;
             for( $i=0; $i<$numberOfSegmentsUpToFirstDollarSign; $i++ ) {
@@ -118,7 +124,7 @@ class route
             }
 
         } else {
-            \ipinga\log::debug('(RH5) Route {'. $this->identifier .'} segment counts not the same');
+            \ipinga\log::debug('(RH6) Route {'. $this->identifier .'} segment counts not the same');
         }
 
         \ipinga\log::debug('(RH7) Route {'. $this->identifier .'} ('. $this->urlToMatch. ') NOT fired!');
