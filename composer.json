@@ -21,7 +21,11 @@
     "php": ">=5.3.0"
   },
   "suggest": {
-    "ext-mcrypt": "Required for HTTP cookie encryption"
+    "ext-mcrypt": "Required for HTTP cookie encryption",
+    "pear/mail": "if you use the ipinga/email class",
+    "pear/mail_mime": "if you use the ipinga/email class",
+    "pear/net_smtp": "if you use the ipinga/email class",
+    "pear/auth_sasl": "if you use the ipinga/email class"
   },
   "autoload": {
     "psr-4": {

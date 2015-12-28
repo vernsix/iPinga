@@ -1,8 +1,18 @@
 <?php
 namespace ipinga;
 
+/*
+These are the paths if you install pear manually.  I prefer to use composer, but don't have it called for my composer.json
+file in case your app doesn't use this class
+
 require_once '/usr/share/php/Mail.php';
 require_once '/usr/share/php/Mail/mime.php';
+*/
+require_once 'Mail.php';
+require_once 'Mail/mime.php';
+
+
+
 
 /*
 Example:
