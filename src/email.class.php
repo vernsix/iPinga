@@ -12,8 +12,6 @@ require_once 'Mail.php';
 require_once 'Mail/mime.php';
 
 
-
-
 /*
 Example:
 
@@ -66,7 +64,7 @@ class email
     public static $username = '';
 
     /** @var string */
-    public static $password ='';
+    public static $password = '';
 
     /** @var string */
     public static $localhost = 'localhost';
@@ -85,7 +83,6 @@ class email
 
     /** @var bool */
     public static $pipelining;
-
 
 
     /** @var string */
@@ -122,27 +119,26 @@ class email
     /** @var string */
     public static $errorMessage = '';
 
-    /** @var string */
-    public static $pearMessage = '';
+    public static $mimeParams = array();
 
 
     public static function send()
     {
+        // setup the headers.  Stays the same for bcc as well as non-bcc recipients
         self::$now = date('D, d M Y H:i:s O (T)');
         self::$headers['From'] = self::$from;
         self::$headers['Date'] = self::$now;
-
         self::$headers['To'] = '';
         foreach (self::$recipients as $r) {
             if (self::$headers['To'] <> '') {
-                self::$headers['To'] .= ', ';
+                self::$headers['To'] .= ' , ';
             }
-            self::$headers['To'] .= $r . ' ';
+            self::$headers['To'] .= $r;
         }
-
         self::$headers['Subject'] = self::$subject;
 
-        $mime_params = array();
+
+        self::$mimeParams = array();
         /*
             eol             - Type of line end. Default is ""\r\n"".
             delay_file_io   - Specifies if attachment files should be read immediately when adding them into message
@@ -155,27 +151,87 @@ class email
             text_charset    - The character set to use for the plain text part of the email. Default is "iso-8859-1".
             html_charset    - The character set to use for the HTML part of the email. Default is "iso-8859-1".
         */
-        $mime_params['eol'] = "\n";
+        self::$mimeParams['eol'] = "\n";
 
-        $mime = new \Mail_mime($mime_params);
+        $mime = new \Mail_mime(self::$mimeParams);
 
         // never try to call these lines in reverse order!!  Bad things happen!!
-        $mime->setTXTBody( self::$textBody ); // must call first
-        $mime->setHTMLBody( self::$htmlBody ); // must call second
+        $mime->setTXTBody(self::$textBody); // must call first
+        $mime->setHTMLBody(self::$htmlBody); // must call second
 
         // must add attachments AFTER setting the bodies (above)
-        foreach (  self::$attachments as $filename => $type) {
+        foreach (self::$attachments as $filename => $type) {
             $mime->addAttachment($filename, $type);
         }
+
 
         // this could be used to override the params used above when creating $mime
         //$getparams = array();
         //$getparams["text_encoding"] = '8bit';
         //$b = $mime->get($getparams);
-        $mime_body = $mime->get(); // Tell mime to build the message and get the results
+        $mimeBody = $mime->get(); // Tell mime to build the message and get the results
+        $mimeHdr = $mime->headers(self::$headers);
 
-        $mime_hdr = $mime->headers(self::$headers);
 
+        $smtp = \Mail::factory('smtp', self::smtpServerDetailsAsArray());
+
+
+        // send any BCC emails, but doesn't die if failure sending
+        $result = true;
+        if (count(self::$bcc) > 0) {
+            \ipinga\log::debug('(email) about to send BCC email');
+            $result = self::trySmtp($smtp, self::$bcc, $mimeHdr, $mimeBody);
+            if ($result===true) {
+                \ipinga\log::debug('(email) BCC sent successfully');
+            } else {
+                \ipinga\log::error('(email) BCC failed');
+            }
+        }
+
+        // now send to everyone else
+        if ($result == true) {
+            \ipinga\log::debug('(email) about to send email');
+            $result = self::trySmtp($smtp, self::$recipients, $mimeHdr, $mimeBody);
+            if ($result===true) {
+                \ipinga\log::debug('(email) sent successfully');
+            } else {
+                \ipinga\log::error('(email) failed');
+            }
+        }
+
+        return $result;
+
+    }
+
+
+    public static function trySmtp($smtp, $recipients, $mimeHdr, $mimeBody)
+    {
+        $result = $smtp->send($recipients, $mimeHdr, $mimeBody);
+
+        if (\PEAR::isError($result)) {
+            self::$error = true;
+            self::$errorMessage = $result->getMessage();
+
+            foreach (self::smtpServerDetailsAsArray() as $k => $v) {
+                \ipinga\log::notice( '(email) server.'. $k. ' => '. $v);
+            }
+
+            \ipinga\log::notice('(email) ' . sprintf('%s: code="%d"', $result->getType(), $result->getCode()));
+            \ipinga\log::notice('(email) ' . sprintf('%s: message="%s"', $result->getType(), $result->getMessage()));
+            \ipinga\log::notice('(email) ' . sprintf('%s: info="%s"', $result->getType(), $result->getUserInfo()));
+
+        } else {
+            self::$error = false;
+            self::$errorMessage = '';
+        }
+
+        return $result;
+
+    }
+
+
+    public static function smtpServerDetailsAsArray()
+    {
         $smtpServerDetails = array(
             'host' => gethostbyname(self::$host),
             'port' => self::$port,
@@ -184,53 +240,24 @@ class email
             'password' => self::$password,
             'localhost' => self::$localhost,
             'timeout' => self::$timeout,
-            'debug' => self::$debug,
+            'debug' => self::$debug
         );
 
         // the precense of these three causes problems on some smtp hosts.  Therefore, I don't set them unless they are
         // specifically set
-        if (isset(self::$verp)==true) {
+        if (isset(self::$verp) == true) {
             $smtpServerDetails['verp'] = self::$verp;
         }
-        if (isset(self::$persist)==true) {
+        if (isset(self::$persist) == true) {
             $smtpServerDetails['persist'] = self::$persist;
         }
-        if (isset(self::$pipelining)==true) {
+        if (isset(self::$pipelining) == true) {
             $smtpServerDetails['pipelining'] = self::$pipelining;
         }
 
-
-
-
-        $smtp = \Mail::factory('smtp', $smtpServerDetails);
-
-        if (count(self::$bcc)>0) {
-            $smtp->send(self::$bcc, $mime_hdr, $mime_body);
-        }
-
-        $result = false;
-        try {
-            $result = $smtp->send(self::$recipients, $mime_hdr, $mime_body);
-//            error_log(serialize($result));
-        } catch (\Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
-        }
-
-        if ($result === true) {
-            self::$error = false;
-            self::$errorMessage = '';
-            self::$pearMessage = '';
-        } else {
-            self::$error = true;
-            self::$errorMessage = serialize($result);
-            if (\PEAR::isError($result)) {
-                self::$pearMessage = $result->getMessage();
-            } else {
-                self::$pearMessage = '';
-            }
-        }
-        return $result;
+        return $smtpServerDetails;
     }
+
 
 }
 
