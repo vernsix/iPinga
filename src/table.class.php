@@ -380,7 +380,7 @@ class table
             $this->lastSql = $sql;
             $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
             foreach($fields as $fieldName => $desiredValue) {
-                $stmt->bindParam(':'. $fieldName, $desiredValue);
+                $stmt->bindValue(':'. $fieldName, $desiredValue);
             }
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
