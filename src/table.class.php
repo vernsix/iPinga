@@ -356,6 +356,43 @@ class table
         return $this->saved;
     }
 
+
+    /**
+     * @param $fields array
+     *
+     * @return bool
+     */
+    public function loadByFieldsMatching($fields)
+    {
+        $this->clear();
+
+        $w = '';
+        foreach($fields as $fieldName => $desiredValue) {
+            if (empty($w)==false) {
+                $w .= ' AND ';
+            }
+            $w .= $fieldName . ' = :' . $fieldName;
+        }
+
+        try {
+
+            $sql = 'select * from ' . $this->tableName . ' where ' . $w;
+            $this->lastSql = $sql;
+            $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
+            foreach($fields as $fieldName => $desiredValue) {
+                $stmt->bindParam(':'. $fieldName, $desiredValue);
+            }
+            $this->_process_loadby_execute($stmt);
+        } catch (\PDOException $e) {
+            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            $this->saved = false;
+        }
+        return $this->saved;
+    }
+
+
+
+
     /**
      * WARNING!  This son-of-a-gun is ripe with the ability to screw the pooch!  PDO doesn't allow a dynamic where
      * clause. Meaning... you can only bindParam to field=value pairs.   It is 100% your responsibility to make

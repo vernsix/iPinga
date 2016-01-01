@@ -37,12 +37,29 @@ class options
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+    or
+
+    CREATE TABLE IF NOT EXISTS `options` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `environment` varchar(100) NOT NULL,
+        `option_name` varchar(100) NOT NULL,
+        `option_value` varchar(2048) NOT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
     */
 
     /**
      * @var \ipinga\table
      */
     public static $optionsTable = null;
+
+
+    /**
+     * @var string
+     */
+    public static $environment = null;
+
 
     /**
      * @var string
@@ -55,16 +72,40 @@ class options
             self::$optionsTable = new \ipinga\table(self::$optionsTableName);
         }
 
-        if (self::$optionsTable->loadBySecondaryKey('option_name', $key) == true) {
-            return self::$optionsTable->option_value;
+        $fieldsToMatch = array('option_name' => $key);
+
+        if (isset(self::$environment) == true) {
+
+            $fieldsToMatch['environment'] = self::$environment;
+            if (self::$optionsTable->loadByFieldsMatching($fieldsToMatch) == true) {
+                return self::$optionsTable->option_value;
+            } else {
+                if (self::$optionsTable->loadByFieldsMatching(array('option_name' => $key)) == true) {
+                    return self::$optionsTable->option_value;
+                } else {
+                    return false;
+                }
+            }
+
         } else {
-            return false;
+
+            if (self::$optionsTable->loadByFieldsMatching($fieldsToMatch) == true) {
+                return self::$optionsTable->option_value;
+            } else {
+                return false;
+            }
+
         }
+
     }
 
     public static function set($key, $value)
     {
         $oldValue = self::get($key);
+
+        if (isset(self::$environment)==true) {
+            self::$optionsTable->environment = self::$environment;
+        }
 
         self::$optionsTable->option_name = $key;
         self::$optionsTable->option_value = $value;
