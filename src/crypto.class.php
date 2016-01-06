@@ -109,6 +109,29 @@ class crypto
         return $result;
     }
 
+
+    /**
+     * @param array $arrayToEncrypt
+     *
+     * @return string printable encrypted string
+     */
+    public static function printableEncrypt($arrayToEncrypt)
+    {
+        $a = array('k' => $arrayToEncrypt);
+        return  bin2hex(\ipinga\crypto::encrypt(json_encode($a)));
+    }
+
+    /**
+     * @param string $encryptedString (created by printableEncrypt())
+     *
+     * @return array Decrypted original value
+     */
+    public static function printableDecrypt($encryptedString)
+    {
+        $a = json_decode( \ipinga\crypto::decrypt(hex2bin($encryptedString)), true );
+        return $a['k'];
+    }
+
 }
 
 ?>
