@@ -238,22 +238,22 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             }
         }
 
-        foreach ($theSettings['choices'] as $key => $value) {
+        foreach ($theSettings['choices'] as $value => $description) {
 
-            echo '<option value="' . $key . '"';
+            echo '<option value="' . $value . '"';
             if (isset($theSettings['selected'])) {
-                if ($key == $theSettings['selected']) {
+                if ($value == $theSettings['selected']) {
                     echo ' selected="selected"';
                 }
             } else {
                 if (isset($theSettings['table'])) {
-                    if ($key == $theSettings['table']->$theSettings['field_name']) {
+                    if ($value == $theSettings['table']->$theSettings['field_name']) {
                         echo ' selected="selected"';
                     }
                 }
             }
 
-            echo '>' . $value . '</option>'. PHP_EOL;
+            echo '>' . $description . '</option>'. PHP_EOL;
         }
 
         echo '</select>'. PHP_EOL;

@@ -216,6 +216,19 @@ Class databaseList
     }
 
 
+    // returns the records as a nested array suitable for passing to defaultHtmlGenerator as settings['choices']
+    public function asChoices($valueFieldName,$descriptionFieldName) {
+
+        $choices = array();
+        foreach ($this->records as $t) {
+            $choices[$t->field[$valueFieldName]] = $t->field[$descriptionFieldName];
+        }
+        return $choices;
+
+    }
+
+
+
 }
 
 ?>
