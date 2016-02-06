@@ -30,6 +30,7 @@ class log
     public static $filename;
     public static $instanceName;
     public static $threshold = 1;
+    public static $environment;
 
     public static function setThreshold($newThreshold)
     {
@@ -49,6 +50,14 @@ class log
         return self::$instanceName;
     }
 
+    public static function environment($newEnvironment=null)
+    {
+        if (isset($newEnvironment)==true) {
+            self::$environment = $newEnvironment;
+        }
+        return self::$environment;
+    }
+
     public static function log( $level, $logMessage )
     {
         if ($level >= self::$threshold) {
@@ -63,14 +72,28 @@ class log
                     self::$filename = \ipinga\ipinga::getInstance()->config('logfile');
                 }
 
-                $handle = fopen(self::$filename, 'a');
-
-                if (!$handle) {
-                    throw new \PDOException('Failed to open file '. self::$filename);
+                if ( file_exists(self::$filename) == true ) {
+                    $handle = fopen(self::$filename, 'ab');
+                    if (!$handle) {
+                        throw new \Exception('(log-1) Failed to open file ' . self::$filename);
+                    }
+                } else {
+                    $handle = fopen(self::$filename, 'wb');
+                    if (!$handle) {
+                        throw new \Exception('(log-2) Failed to create file ' . self::$filename);
+                    }
                 }
 
                 fseek($handle, 0, SEEK_END);
-                fwrite($handle, date("Y-m-d H:i:s") . " [" . $type . "] [" . self::instanceName() . "] " . $logMessage . "\r\n");
+
+                $instanceName = self::instanceName();
+                if (isset(self::$environment) == true) {
+                    $environment = self::$environment;
+                    fwrite($handle, date("Y-m-d H:i:s") . " [$type] [$environment] [$instanceName] $logMessage\r\n");
+                } else {
+                    fwrite($handle, date("Y-m-d H:i:s") . " [$type] [$instanceName] $logMessage\r\n");
+                }
+
                 fflush($handle);
                 fclose($handle);
             } catch (\PDOException $e) {
