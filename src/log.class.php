@@ -96,7 +96,7 @@ class log
 
                 fflush($handle);
                 fclose($handle);
-            } catch (\PDOException $e) {
+            } catch (\Exception $e) {
                 die($e->getMessage());
             }
         }

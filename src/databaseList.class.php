@@ -40,6 +40,13 @@ Class databaseList
     public $records = array();
 
     /**
+     * @var string
+     */
+    public $lastSql = '';
+
+
+
+    /**
      * @param string $tableName
      * @param array  $filter
      */
@@ -92,6 +99,47 @@ Class databaseList
     }
 
 
+
+    public function loadByFieldsMatching($fields = array(),$orderBy = 'id')
+    {
+        $w = '';
+        foreach($fields as $fieldName => $desiredValue) {
+            if (empty($w)==false) {
+                $w .= ' AND ';
+            }
+            $w .= $fieldName . ' = :' . $fieldName;
+        }
+
+        if (empty($w) == true) {
+            $sql = sprintf('select id from %s order by %s', $this->tableName, $orderBy);
+        } else {
+            $sql = sprintf('select id from %s where %s order by %s', $this->tableName, $w, $orderBy);
+        }
+        $this->lastSql = $sql;
+
+        try {
+
+            $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
+            foreach($fields as $fieldName => $desiredValue) {
+                $stmt->bindValue(':'. $fieldName, $desiredValue);
+            }
+            $stmt->execute();
+
+            while ($r=$stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $tbl = new \ipinga\table($this->tableName);
+                $tbl->loadById($r['id']);
+                $this->records[] = $tbl;
+            }
+
+        } catch (\PDOException $e) {
+            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            $this->saved = false;
+        }
+
+
+
+
+    }
 
     // I am not proud of this function.  :)
     public function filter($filter = array())
