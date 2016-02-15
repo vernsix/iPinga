@@ -104,7 +104,11 @@ class options
         $oldValue = self::get($key);
 
         if (isset(self::$environment)==true) {
-            self::$optionsTable->environment = self::$environment;
+            $tableEnvironment = self::$optionsTable->environment;
+            if (empty($tableEnvironment)==true) {   // we read the default and are writing back to our specific environment!
+                self::$optionsTable->id = 0;
+                self::$optionsTable->environment = self::$environment;
+            }
         }
 
         self::$optionsTable->option_name = $key;
