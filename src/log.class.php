@@ -36,6 +36,7 @@ class log
     {
         $oldThreshold = self::$threshold;
         self::$threshold = $newThreshold;
+        self::instanceName();
         return $oldThreshold;
     }
 
@@ -55,11 +56,14 @@ class log
         if (isset($newEnvironment)==true) {
             self::$environment = $newEnvironment;
         }
+        self::instanceName();
         return self::$environment;
     }
 
     public static function log( $level, $logMessage )
     {
+        $instanceName = self::instanceName();
+
         if ($level >= self::$threshold) {
             if ( ($level>=0) && ($level<=7) ) {
                 $type = array('DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY')[$level];
@@ -86,7 +90,6 @@ class log
 
                 fseek($handle, 0, SEEK_END);
 
-                $instanceName = self::instanceName();
                 if (isset(self::$environment) == true) {
                     $environment = self::$environment;
                     fwrite($handle, date("Y-m-d H:i:s") . " [$type] [$environment] [$instanceName] $logMessage\r\n");
