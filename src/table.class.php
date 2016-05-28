@@ -347,7 +347,8 @@ class table
             $this->lastSql = $sql;
             $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
             $stmt->bindParam(':desired_value', $desiredValue);
-            $this->sqlParams = array('desired_value' => $desiredValue);
+            $this->sqlParams = array();
+            $this->sqlParams[$fieldName] = $desiredValue;
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
             echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
@@ -378,9 +379,11 @@ class table
 
             $sql = 'select * from ' . $this->tableName . ' where ' . $w;
             $this->lastSql = $sql;
+            $this->sqlParams = array();
             $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
             foreach($fields as $fieldName => $desiredValue) {
                 $stmt->bindValue(':'. $fieldName, $desiredValue);
+                $this->sqlParams[$fieldName] = $desiredValue;
             }
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {

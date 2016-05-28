@@ -66,6 +66,7 @@ class options
      */
     public static $optionsTableName = 'options';
 
+
     public static function get($key)
     {
         if (isset(self::$optionsTable) == false) {
@@ -101,20 +102,19 @@ class options
 
     public static function set($key, $value)
     {
-        $oldValue = self::get($key);
-
-        if (isset(self::$environment)==true) {
-            $tableEnvironment = self::$optionsTable->environment;
-            if (empty($tableEnvironment)==true) {   // we read the default and are writing back to our specific environment!
+        $oldValue = self::get($key);    // just to load all the internals
+        if (isset(self::$environment)==true) {  // we want the environmental option
+            $tableEnvironment = self::$optionsTable->field['environment'];  // have to assign it to a variable so empty doesn't spew
+            if (empty($tableEnvironment)==true) {   // we read the default, but are saving it to our environment
                 self::$optionsTable->id = 0;
-                self::$optionsTable->environment = self::$environment;
             }
+            self::$optionsTable->environment = self::$environment;
+        } else {
+            self::$optionsTable->environment = '';
         }
-
         self::$optionsTable->option_name = $key;
         self::$optionsTable->option_value = $value;
         self::$optionsTable->save();
-
         return $oldValue;
     }
 
