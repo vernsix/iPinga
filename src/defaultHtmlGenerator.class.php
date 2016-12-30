@@ -28,6 +28,12 @@ namespace ipinga;
 Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 {
 
+    /*
+     * Changed the behavior a bit.  Echo is no longer called within any of these functions.
+     * You will need to echo the contents of $this->output instead
+     */
+    public $output = '';
+
     public $postLikeArray = array();
 
     public function __construct()
@@ -60,7 +66,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     {
         $theSettings = array_merge($this->defaultSettings,$settings);
         if (isset($theSettings[$attrName])) {
-            echo ' ' . $attrName . '="' . $theSettings[$attrName] . '"';
+            $this->output .= ' ' . $attrName . '="' . $theSettings[$attrName] . '"';
         }
     }
 
@@ -79,17 +85,17 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         } else {
             $fieldName = $theSettings['field_name'];
         }
-        echo ' name="' . $fieldName . '"';
+        $this->output .=  ' name="' . $fieldName . '"';
 
         $this->echoAttribute($theSettings, 'id');
 
         $this->echoAttribute($theSettings, 'disabled');
 
         if (isset($theSettings['class'])) {
-            echo ' class="' . $theSettings['class'] . '"';
+            $this->output .=  ' class="' . $theSettings['class'] . '"';
         } else {
             if ((!isset($theSettings['type'])) || ($theSettings['type'] !== 'hidden')) {
-                echo ' class="text ui-widget-content ui-corner-all"';
+                $this->output .=  ' class="text ui-widget-content ui-corner-all"';
             }
         }
 
@@ -138,13 +144,13 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             $this->label($theSettings);
         }
 
-        echo '<textarea';
+        $this->output .= '<textarea';
         $this->echoAttribute($theSettings, 'rows');
         $this->echoAttribute($theSettings, 'cols');
         $varName = $this->echoCoreAttributes($theSettings);
-        echo '>';
-        echo $this->varValue($theSettings, $varName);
-        echo '</textarea>'. PHP_EOL;
+        $this->output .= '>';
+        $this->output .= $this->varValue($theSettings, $varName);
+        $this->output .= '</textarea>'. PHP_EOL;
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
@@ -164,31 +170,31 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             $this->label($theSettings);
         }
 
-        echo '<input';
+        $this->output .=  '<input';
 
         if (isset($theSettings['type'])) {
-            echo ' type="' . $theSettings['type'] . '"';
+            $this->output .= ' type="' . $theSettings['type'] . '"';
         } else {
-            echo ' type="text"';
+            $this->output .= ' type="text"';
         }
         $varName = $this->echoCoreAttributes($theSettings);
 
-        echo ' value="' . $this->varValue($theSettings, $varName) . '"';
+        $this->output .= ' value="' . $this->varValue($theSettings, $varName) . '"';
 
         if (isset($theSettings['type']) && ($theSettings['type'] == 'checkbox')) {
             if ($this->varValue($theSettings, $varName) == true) {
-                echo ' checked="checked"';
+                $this->output .= ' checked="checked"';
             }
         }
 
         // some people might belly ache about this, but I rarely find a need to specify size differently than maxlength.
         // you can change it if you like, obviously.
         if (isset($theSettings['maxlength'])) {
-            echo ' size="' . $theSettings['maxlength'] . '"';
-            echo ' maxlength="' . $theSettings['maxlength'] . '"';
+            $this->output .= ' size="' . $theSettings['maxlength'] . '"';
+            $this->output .= ' maxlength="' . $theSettings['maxlength'] . '"';
         }
 
-        echo '>'. PHP_EOL;
+        $this->output .= '>'. PHP_EOL;
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
@@ -210,29 +216,29 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         // I used to use class="ui-selectmenu ui-selectmenu-menu-dropdown ui-widget ui-state-default ui-corner-all"'
         // keeping this comment here for quick reference is all.
 
-        echo '<select';
+        $this->output .= '<select';
         if (isset(template::getInstance()->vars['class'])) {
             $varName = $this->echoCoreAttributes($theSettings);
         } else {
             $varName = $this->echoCoreAttributes(array_merge($theSettings,array('class'=>'text ui-widget ui-corner-all')));
         }
-        echo '>';
+        $this->output .= '>';
 
         if (isset($theSettings['addfirst']) && ($theSettings['addfirst'] == true)) {
             if (isset($theSettings['selected'])) {
 
                 if (empty($theSettings['selected'])) {
-                    echo '<option value="" selected="selected">Select one...</option>'.PHP_EOL;
+                    $this->output .= '<option value="" selected="selected">Select one...</option>'.PHP_EOL;
                 } else {
-                    echo '<option value="">Select one...</option>'. PHP_EOL;
+                    $this->output .= '<option value="">Select one...</option>'. PHP_EOL;
                 }
 
             } else {
 
                 if (empty($theSettings['table']->$varName)) {
-                    echo '<option value="" selected="selected">Select one...</option>'. PHP_EOL;
+                    $this->output .= '<option value="" selected="selected">Select one...</option>'. PHP_EOL;
                 } else {
-                    echo '<option value="">Select one...</option>'. PHP_EOL;
+                    $this->output .= '<option value="">Select one...</option>'. PHP_EOL;
                 }
 
             }
@@ -240,23 +246,23 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         foreach ($theSettings['choices'] as $value => $description) {
 
-            echo '<option value="' . $value . '"';
+            $this->output .= '<option value="' . $value . '"';
             if (isset($theSettings['selected'])) {
                 if ($value == $theSettings['selected']) {
-                    echo ' selected="selected"';
+                    $this->output .= ' selected="selected"';
                 }
             } else {
                 if (isset($theSettings['table'])) {
                     if ($value == $theSettings['table']->$theSettings['field_name']) {
-                        echo ' selected="selected"';
+                        $this->output .= ' selected="selected"';
                     }
                 }
             }
 
-            echo '>' . $description . '</option>'. PHP_EOL;
+            $this->output .= '>' . $description . '</option>'. PHP_EOL;
         }
 
-        echo '</select>'. PHP_EOL;
+        $this->output .= '</select>'. PHP_EOL;
         $this->clearAtEnd($theSettings);
 
     }
@@ -271,21 +277,21 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         $theSettings = array_merge($this->defaultSettings,$settings);
 
         if (isset($theSettings['hint']) && (!empty($theSettings['hint']))) {
-            echo '<span';
+            $this->output .= '<span';
             // $this->echoAttribute($theSettings, 'name');
             // $this->echoAttribute($theSettings, 'id');
             if (isset($theSettings['class'])) {
-                echo ' class="' . $theSettings['class'] . '"';
+                $this->output .= ' class="' . $theSettings['class'] . '"';
             } else {
-                echo ' class="hint"';
+                $this->output .= ' class="hint"';
             }
             if (isset($theSettings['hint_style'])) {
-                echo ' style="' . $theSettings['hint_style'] . '"';
+                $this->output .= ' style="' . $theSettings['hint_style'] . '"';
             } else {
                 $this->echoAttribute($theSettings, 'style');
             }
 
-            echo '>' . $theSettings['hint'] . '</span>'. PHP_EOL;
+            $this->output .= '>' . $theSettings['hint'] . '</span>'. PHP_EOL;
             $this->clearAtEnd($theSettings);
 
         }
@@ -295,41 +301,41 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     public function label($settings)
     {
         $theSettings = array_merge($this->defaultSettings,$settings);
-        echo '<label';
+        $this->output .= '<label';
 
         if (isset($theSettings['name'])) {
-            echo ' for="' . $theSettings['name'] . '"';
+            $this->output .= ' for="' . $theSettings['name'] . '"';
         } else {
-            echo ' for="' . $theSettings['field_name'] . '"';
+            $this->output .= ' for="' . $theSettings['field_name'] . '"';
         }
 
         if (isset($theSettings['id'])) {
-            echo ' id="' . $theSettings['id'] . '"';
+            $this->output .= ' id="' . $theSettings['id'] . '"';
         }
 
         if (isset($theSettings['disabled'])) {
-            echo ' disabled="disabled"';
+            $this->output .= ' disabled="disabled"';
         }
 
         if (isset($theSettings['label_class'])) {
-            echo ' class="' . $theSettings['label_class'] . '"';
+            $this->output .= ' class="' . $theSettings['label_class'] . '"';
         } else {
             if (isset($theSettings['class'])) {
-                echo ' class="'. $theSettings['class'] . '"';
+                $this->output .= ' class="'. $theSettings['class'] . '"';
             } else {
-                echo ' class="text"';
+                $this->output .= ' class="text"';
             }
         }
 
         if (isset($theSettings['label_style'])) {
-            echo ' style="' . $theSettings['label_style'] . '"';
+            $this->output .= ' style="' . $theSettings['label_style'] . '"';
         } else {
             if (isset($theSettings['style'])) {
-                echo ' style="' . $theSettings['style'] . '"';
+                $this->output .= ' style="' . $theSettings['style'] . '"';
             }
         }
 
-        echo '>' . $theSettings['label'] . '</label>'. PHP_EOL;
+        $this->output .= '>' . $theSettings['label'] . '</label>'. PHP_EOL;
 
     }
 
@@ -372,7 +378,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     protected function clearAtEnd($theSettings)
     {
         if ( (isset($theSettings['clearAtEnd'])==true) && ($theSettings['clearAtEnd']==true) ) {
-            echo '<div style="clear: both;"></div>'. PHP_EOL;
+            $this->output .= '<div style="clear: both;"></div>'. PHP_EOL;
         }
     }
 
