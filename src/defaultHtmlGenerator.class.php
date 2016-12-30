@@ -34,6 +34,13 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public $output = '';
 
+    public function output()
+    {
+        $r = $this->output;
+        $this->output = '';
+        return $r;
+    }
+    
     public $postLikeArray = array();
 
     public function __construct()
