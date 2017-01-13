@@ -34,27 +34,26 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public $legacy = true;
 
-    public function legacy()
-    {
-        if ($this->legacy == true) {
-            echo $this->output();
-        }
-    }
-
-
     /*
      * Changed the behavior a bit.  Echo is no longer called within any of these functions.
      * You will need to echo the contents of $this->output instead
      */
     public $output = '';
 
-    public function output()
+    public function output($text)
     {
-        $r = $this->output;
-        $this->output = '';
-        return $r;
+        if (isset($outputStream)==true) {
+            $this->output .= $text;
+        }
+        if ($this->legacy==true) {
+            echo $this->output;
+            $this->output = '';
+        }
     }
-    
+
+
+
+
     public $postLikeArray = array();
 
     public function __construct()
@@ -87,9 +86,8 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     {
         $theSettings = array_merge($this->defaultSettings,$settings);
         if (isset($theSettings[$attrName])) {
-            $this->output .= ' ' . $attrName . '="' . $theSettings[$attrName] . '"';
+            $this->output( ' ' . $attrName . '="' . $theSettings[$attrName] . '"' );
         }
-        $this->legacy();
     }
 
     /**
@@ -107,23 +105,22 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         } else {
             $fieldName = $theSettings['field_name'];
         }
-        $this->output .=  ' name="' . $fieldName . '"';
+        $this->output(' name="' . $fieldName . '"');
 
         $this->echoAttribute($theSettings, 'id');
 
         $this->echoAttribute($theSettings, 'disabled');
 
         if (isset($theSettings['class'])) {
-            $this->output .=  ' class="' . $theSettings['class'] . '"';
+            $this->output(' class="' . $theSettings['class'] . '"');
         } else {
             if ((!isset($theSettings['type'])) || ($theSettings['type'] !== 'hidden')) {
-                $this->output .=  ' class="text ui-widget-content ui-corner-all"';
+                $this->output(' class="text ui-widget-content ui-corner-all"');
             }
         }
 
         $this->echoAttribute($theSettings, 'style');
 
-        $this->legacy();
         return $fieldName;
 
     }
@@ -151,7 +148,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
                 ));
             }
         }
-        $this->legacy();
     }
 
     /**
@@ -168,17 +164,16 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             $this->label($theSettings);
         }
 
-        $this->output .= '<textarea';
+        $this->output('<textarea');
         $this->echoAttribute($theSettings, 'rows');
         $this->echoAttribute($theSettings, 'cols');
         $varName = $this->echoCoreAttributes($theSettings);
-        $this->output .= '>';
-        $this->output .= $this->varValue($theSettings, $varName);
-        $this->output .= '</textarea>'. PHP_EOL;
+        $this->output('>');
+        $this->output($this->varValue($theSettings, $varName));
+        $this->output('</textarea>'. PHP_EOL);
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
-        $this->legacy();
     }
 
 
@@ -195,35 +190,34 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             $this->label($theSettings);
         }
 
-        $this->output .=  '<input';
+        $this->output('<input');
 
         if (isset($theSettings['type'])) {
-            $this->output .= ' type="' . $theSettings['type'] . '"';
+            $this->output(' type="' . $theSettings['type'] . '"');
         } else {
-            $this->output .= ' type="text"';
+            $this->output(' type="text"');
         }
         $varName = $this->echoCoreAttributes($theSettings);
 
-        $this->output .= ' value="' . $this->varValue($theSettings, $varName) . '"';
+        $this->output(' value="' . $this->varValue($theSettings, $varName) . '"');
 
         if (isset($theSettings['type']) && ($theSettings['type'] == 'checkbox')) {
             if ($this->varValue($theSettings, $varName) == true) {
-                $this->output .= ' checked="checked"';
+                $this->output(' checked="checked"');
             }
         }
 
         // some people might belly ache about this, but I rarely find a need to specify size differently than maxlength.
         // you can change it if you like, obviously.
         if (isset($theSettings['maxlength'])) {
-            $this->output .= ' size="' . $theSettings['maxlength'] . '"';
-            $this->output .= ' maxlength="' . $theSettings['maxlength'] . '"';
+            $this->output(' size="' . $theSettings['maxlength'] . '"');
+            $this->output(' maxlength="' . $theSettings['maxlength'] . '"');
         }
 
-        $this->output .= '>'. PHP_EOL;
+        $this->output('>'. PHP_EOL);
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
-        $this->legacy();
     }
 
     /**
@@ -242,29 +236,29 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         // I used to use class="ui-selectmenu ui-selectmenu-menu-dropdown ui-widget ui-state-default ui-corner-all"'
         // keeping this comment here for quick reference is all.
 
-        $this->output .= '<select';
+        $this->output('<select');
         if (isset(template::getInstance()->vars['class'])) {
             $varName = $this->echoCoreAttributes($theSettings);
         } else {
             $varName = $this->echoCoreAttributes(array_merge($theSettings,array('class'=>'text ui-widget ui-corner-all')));
         }
-        $this->output .= '>';
+        $this->output('>');
 
         if (isset($theSettings['addfirst']) && ($theSettings['addfirst'] == true)) {
             if (isset($theSettings['selected'])) {
 
                 if (empty($theSettings['selected'])) {
-                    $this->output .= '<option value="" selected="selected">Select one...</option>'.PHP_EOL;
+                    $this->output('<option value="" selected="selected">Select one...</option>'.PHP_EOL) ;
                 } else {
-                    $this->output .= '<option value="">Select one...</option>'. PHP_EOL;
+                    $this->output('<option value="">Select one...</option>'. PHP_EOL);
                 }
 
             } else {
 
                 if (empty($theSettings['table']->$varName)) {
-                    $this->output .= '<option value="" selected="selected">Select one...</option>'. PHP_EOL;
+                    $this->output('<option value="" selected="selected">Select one...</option>'. PHP_EOL);
                 } else {
-                    $this->output .= '<option value="">Select one...</option>'. PHP_EOL;
+                    $this->output('<option value="">Select one...</option>'. PHP_EOL);
                 }
 
             }
@@ -272,25 +266,24 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         foreach ($theSettings['choices'] as $value => $description) {
 
-            $this->output .= '<option value="' . $value . '"';
+            $this->output('<option value="' . $value . '"');
             if (isset($theSettings['selected'])) {
                 if ($value == $theSettings['selected']) {
-                    $this->output .= ' selected="selected"';
+                    $this->output(' selected="selected"');
                 }
             } else {
                 if (isset($theSettings['table'])) {
                     if ($value == $theSettings['table']->$theSettings['field_name']) {
-                        $this->output .= ' selected="selected"';
+                        $this->output(' selected="selected"');
                     }
                 }
             }
 
-            $this->output .= '>' . $description . '</option>'. PHP_EOL;
+            $this->output( '>' . $description . '</option>'. PHP_EOL);
         }
 
-        $this->output .= '</select>'. PHP_EOL;
+        $this->output('</select>'. PHP_EOL);
         $this->clearAtEnd($theSettings);
-        $this->legacy();
     }
 
     /**
@@ -303,67 +296,65 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         $theSettings = array_merge($this->defaultSettings,$settings);
 
         if (isset($theSettings['hint']) && (!empty($theSettings['hint']))) {
-            $this->output .= '<span';
+            $this->output('<span');
             // $this->echoAttribute($theSettings, 'name');
             // $this->echoAttribute($theSettings, 'id');
             if (isset($theSettings['class'])) {
-                $this->output .= ' class="' . $theSettings['class'] . '"';
+                $this->output(' class="' . $theSettings['class'] . '"');
             } else {
-                $this->output .= ' class="hint"';
+                $this->output(' class="hint"');
             }
             if (isset($theSettings['hint_style'])) {
-                $this->output .= ' style="' . $theSettings['hint_style'] . '"';
+                $this->output(' style="' . $theSettings['hint_style'] . '"');
             } else {
                 $this->echoAttribute($theSettings, 'style');
             }
 
-            $this->output .= '>' . $theSettings['hint'] . '</span>'. PHP_EOL;
+            $this->output('>' . $theSettings['hint'] . '</span>'. PHP_EOL);
             $this->clearAtEnd($theSettings);
 
         }
-        $this->legacy();
     }
 
 
     public function label($settings)
     {
         $theSettings = array_merge($this->defaultSettings,$settings);
-        $this->output .= '<label';
+        $this->output('<label');
 
         if (isset($theSettings['name'])) {
-            $this->output .= ' for="' . $theSettings['name'] . '"';
+            $this->output(' for="' . $theSettings['name'] . '"');
         } else {
-            $this->output .= ' for="' . $theSettings['field_name'] . '"';
+            $this->output(' for="' . $theSettings['field_name'] . '"');
         }
 
         if (isset($theSettings['id'])) {
-            $this->output .= ' id="' . $theSettings['id'] . '"';
+            $this->output(' id="' . $theSettings['id'] . '"');
         }
 
         if (isset($theSettings['disabled'])) {
-            $this->output .= ' disabled="disabled"';
+            $this->output(' disabled="disabled"');
         }
 
         if (isset($theSettings['label_class'])) {
-            $this->output .= ' class="' . $theSettings['label_class'] . '"';
+            $this->output(' class="' . $theSettings['label_class'] . '"');
         } else {
             if (isset($theSettings['class'])) {
-                $this->output .= ' class="'. $theSettings['class'] . '"';
+                $this->output(' class="'. $theSettings['class'] . '"');
             } else {
-                $this->output .= ' class="text"';
+                $this->output(' class="text"');
             }
         }
 
         if (isset($theSettings['label_style'])) {
-            $this->output .= ' style="' . $theSettings['label_style'] . '"';
+            $this->output(' style="' . $theSettings['label_style'] . '"');
         } else {
             if (isset($theSettings['style'])) {
-                $this->output .= ' style="' . $theSettings['style'] . '"';
+                $this->output(' style="' . $theSettings['style'] . '"');
             }
         }
 
-        $this->output .= '>' . $theSettings['label'] . '</label>'. PHP_EOL;
-        $this->legacy();
+        $this->output('>' . $theSettings['label'] . '</label>'. PHP_EOL);
     }
 
 
@@ -405,9 +396,8 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     protected function clearAtEnd($theSettings)
     {
         if ( (isset($theSettings['clearAtEnd'])==true) && ($theSettings['clearAtEnd']==true) ) {
-            $this->output .= '<div style="clear: both;"></div>'. PHP_EOL;
+            $this->output('<div style="clear: both;"></div>'. PHP_EOL);
         }
-        $this->legacy();
     }
 
 
