@@ -29,6 +29,20 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 {
 
     /*
+     * Some devs complained that my $output change broke all their apps.  Ooops. So this is how you turn that
+     * functionality on.
+     */
+    public $legacy = true;
+
+    public function legacy()
+    {
+        if ($this->legacy == true) {
+            echo $this->output();
+        }
+    }
+
+
+    /*
      * Changed the behavior a bit.  Echo is no longer called within any of these functions.
      * You will need to echo the contents of $this->output instead
      */
@@ -75,6 +89,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         if (isset($theSettings[$attrName])) {
             $this->output .= ' ' . $attrName . '="' . $theSettings[$attrName] . '"';
         }
+        $this->legacy();
     }
 
     /**
@@ -108,6 +123,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         $this->echoAttribute($theSettings, 'style');
 
+        $this->legacy();
         return $fieldName;
 
     }
@@ -135,6 +151,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
                 ));
             }
         }
+        $this->legacy();
     }
 
     /**
@@ -161,6 +178,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
+        $this->legacy();
     }
 
 
@@ -205,6 +223,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
+        $this->legacy();
     }
 
     /**
@@ -271,7 +290,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         $this->output .= '</select>'. PHP_EOL;
         $this->clearAtEnd($theSettings);
-
+        $this->legacy();
     }
 
     /**
@@ -302,6 +321,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             $this->clearAtEnd($theSettings);
 
         }
+        $this->legacy();
     }
 
 
@@ -343,7 +363,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         }
 
         $this->output .= '>' . $theSettings['label'] . '</label>'. PHP_EOL;
-
+        $this->legacy();
     }
 
 
@@ -387,6 +407,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         if ( (isset($theSettings['clearAtEnd'])==true) && ($theSettings['clearAtEnd']==true) ) {
             $this->output .= '<div style="clear: both;"></div>'. PHP_EOL;
         }
+        $this->legacy();
     }
 
 
