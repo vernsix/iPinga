@@ -48,6 +48,16 @@ namespace ipinga {
         /**
          * @var array
          */
+        public $getRoutes = array();
+
+        /**
+         * @var array
+         */
+        public $postRoutes = array();
+
+        /**
+         * @var array
+         */
         public $defaultRoute = array();
 
         /**
@@ -185,6 +195,18 @@ namespace ipinga {
         public function run()
         {
 
+            if (count($this->routes)==0) {
+                if ((isset($_SERVER['REQUEST_METHOD']) == true) && ($_SERVER['REQUEST_METHOD'] == 'GET')) {
+                    if (count($this->getRoutes) > 0) {
+                        $this->routes = $this->getRoutes;
+                    }
+                } else {
+                    if (count($this->postRoutes) > 0) {
+                        $this->routes = $this->postRoutes;
+                    }
+                }
+            }
+
             $rt = (isset($_GET['rt'])) ? $_GET['rt'] : '';
 
             // I use output buffering to make sure any cookies that are set in the code get handled properly.
@@ -230,6 +252,32 @@ namespace ipinga {
         {
             $this->routes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware,$identifier);
         }
+
+
+        /**
+         * @param      $urlToMatch
+         * @param      $controller
+         * @param      $method
+         * @param null $middleware
+         */
+        public function addGetRoute($urlToMatch,$controller,$method,$middleware=null,$identifier='')
+        {
+            $this->getRoutes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware,$identifier);
+        }
+
+        /**
+         * @param      $urlToMatch
+         * @param      $controller
+         * @param      $method
+         * @param null $middleware
+         */
+        public function addPostRoute($urlToMatch,$controller,$method,$middleware=null,$identifier='')
+        {
+            $this->postRoutes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware,$identifier);
+        }
+
+
+
 
         /**
          * @param $controller
