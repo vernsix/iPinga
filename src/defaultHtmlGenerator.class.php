@@ -40,11 +40,9 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public $output = '';
 
-    public function output($text)
+    public function output($text='')
     {
-        if (isset($outputStream)==true) {
-            $this->output .= $text;
-        }
+        $this->output .= $text;
         if ($this->legacy==true) {
             echo $this->output;
             $this->output = '';
