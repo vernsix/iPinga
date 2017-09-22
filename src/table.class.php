@@ -58,7 +58,13 @@ class table
                 $this->clearedValues[$fieldName] = $clearedValue;
             }
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
+
         }
         $this->clear();
     }
@@ -132,7 +138,14 @@ class table
                 $found = true;
             }
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+            $ipinga = ipinga::getInstance();
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
+
         }
         return $found;
     }
@@ -184,7 +197,12 @@ class table
             }
             $this->saved = true;
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
             $this->saved = false;
         }
         return $retval;
@@ -237,7 +255,12 @@ class table
             }
             $this->saved = true;
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
             $this->saved = false;
         }
         return $retval;
@@ -274,10 +297,18 @@ class table
             $stmt->bindParam(':id', $id);
             $this->sqlParams = array('id' => $id);
             $stmt->execute();
+            $this->saved = true;
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
+
             $this->saved = false;
         }
+        return $this->saved;
     }
 
 
@@ -312,8 +343,14 @@ class table
                 $this->saved = true;
             }
 
-        } catch (\Exception $e) {
-            echo $e->getMessage() . '<br><hr>';
+        } catch (\PDOException $e) {
+
+            $ipinga = \ipinga\ipinga::getInstance();
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br><hr>';
+            } else {
+                throw $e;
+            }
             $this->saved = false;
         }
     }
@@ -331,7 +368,13 @@ class table
                 $this->sqlParams = array('id' => $id);
                 $this->_process_loadby_execute($stmt);
             } catch (\PDOException $e) {
-                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+                $ipinga = \ipinga\ipinga::getInstance();
+                if ($ipinga->config('mysql.echoerrors') == true ) {
+                    echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+                } else {
+                    throw $e;
+                }
                 $this->saved = false;
             }
 
@@ -351,7 +394,12 @@ class table
             $this->sqlParams[$fieldName] = $desiredValue;
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            $ipinga = \ipinga\ipinga::getInstance();
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
             $this->saved = false;
         }
         return $this->saved;
@@ -387,7 +435,13 @@ class table
             }
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+            $ipinga = \ipinga\ipinga::getInstance();
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
             $this->saved = false;
         }
         return $this->saved;
@@ -416,7 +470,13 @@ class table
             $stmt = \ipinga\ipinga::getInstance()->pdo()->prepare($sql);
             $this->_process_loadby_execute($stmt);
         } catch (\PDOException $e) {
-            echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+
+            $ipinga = \ipinga\ipinga::getInstance();
+            if ($ipinga->config('mysql.echoerrors') == true ) {
+                echo $e->getMessage() . '<br>' . $sql . '<br><hr>';
+            } else {
+                throw $e;
+            }
             $this->saved = false;
         }
         return $this->saved;
@@ -424,5 +484,3 @@ class table
 
 }
 
-
-?>

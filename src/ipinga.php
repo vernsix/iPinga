@@ -123,6 +123,7 @@ namespace ipinga {
             $this->configOptions['mysql.host'] = 'localhost';
             $this->configOptions['mysql.password'] = 'your_db_password';
             $this->configOptions['mysql.user'] = 'your_db_user';
+            $this->configOptions['mysql.echoerrors'] = true;
 
             $this->configOptions['path.classes'] = getcwd() . '/classes';
             $this->configOptions['path.controllers'] = getcwd() . '/controllers';
