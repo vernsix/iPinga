@@ -23,6 +23,7 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
     IN THE SOFTWARE.
 */
+
 namespace ipinga;
 
 Class defaultHtmlGenerator extends \ipinga\htmlGenerator
@@ -40,16 +41,14 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public $output = '';
 
-    public function output($text='')
+    public function output($text = '')
     {
         $this->output .= $text;
-        if ($this->legacy==true) {
+        if ($this->legacy == true) {
             echo $this->output;
             $this->output = '';
         }
     }
-
-
 
 
     public $postLikeArray = array();
@@ -59,10 +58,10 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         $this->postLikeArray = $_POST;
     }
 
-    public function overridePostArray( $newVars = null )
+    public function overridePostArray($newVars = null)
     {
         $return = $this->postLikeArray;
-        if (isset($newVars)==true) {
+        if (isset($newVars) == true) {
             $this->postLikeArray = $newVars;
         }
         return $return;
@@ -82,9 +81,9 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public function echoAttribute($settings, $attrName)
     {
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
         if (isset($theSettings[$attrName])) {
-            $this->output( ' ' . $attrName . '="' . $theSettings[$attrName] . '"' );
+            $this->output(' ' . $attrName . '="' . $theSettings[$attrName] . '"');
         }
     }
 
@@ -96,7 +95,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     public function echoCoreAttributes($settings)
     {
 
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
 
         if (isset($theSettings['name'])) {
             $fieldName = $theSettings['name'];
@@ -131,7 +130,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public function echoHints($settings, $varName)
     {
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
 
         // did the developer provide a specific hint?
         $this->hint($theSettings);
@@ -155,7 +154,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public function textarea($settings)
     {
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
 
         // draw the label first
         if (isset($theSettings['label'])) {
@@ -168,7 +167,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         $varName = $this->echoCoreAttributes($theSettings);
         $this->output('>');
         $this->output($this->varValue($theSettings, $varName));
-        $this->output('</textarea>'. PHP_EOL);
+        $this->output('</textarea>' . PHP_EOL);
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
@@ -182,7 +181,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public function field($settings)
     {
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
         // draw the label first
         if (isset($theSettings['label'])) {
             $this->label($theSettings);
@@ -212,7 +211,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             $this->output(' maxlength="' . $theSettings['maxlength'] . '"');
         }
 
-        $this->output('>'. PHP_EOL);
+        $this->output('>' . PHP_EOL);
 
         $this->echoHints($theSettings, $varName);
         $this->clearAtEnd($theSettings);
@@ -225,7 +224,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public function select($settings)
     {
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
         // draw the label first
         if (isset($theSettings['label'])) {
             $this->label($theSettings);
@@ -238,7 +237,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
         if (isset(template::getInstance()->vars['class'])) {
             $varName = $this->echoCoreAttributes($theSettings);
         } else {
-            $varName = $this->echoCoreAttributes(array_merge($theSettings,array('class'=>'text ui-widget ui-corner-all')));
+            $varName = $this->echoCoreAttributes(array_merge($theSettings, array('class' => 'text ui-widget ui-corner-all')));
         }
         $this->output('>');
 
@@ -246,17 +245,17 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             if (isset($theSettings['selected'])) {
 
                 if (empty($theSettings['selected'])) {
-                    $this->output('<option value="" selected="selected">Select one...</option>'.PHP_EOL) ;
+                    $this->output('<option value="" selected="selected">Select one...</option>' . PHP_EOL);
                 } else {
-                    $this->output('<option value="">Select one...</option>'. PHP_EOL);
+                    $this->output('<option value="">Select one...</option>' . PHP_EOL);
                 }
 
             } else {
 
                 if (empty($theSettings['table']->$varName)) {
-                    $this->output('<option value="" selected="selected">Select one...</option>'. PHP_EOL);
+                    $this->output('<option value="" selected="selected">Select one...</option>' . PHP_EOL);
                 } else {
-                    $this->output('<option value="">Select one...</option>'. PHP_EOL);
+                    $this->output('<option value="">Select one...</option>' . PHP_EOL);
                 }
 
             }
@@ -277,10 +276,10 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
                 }
             }
 
-            $this->output( '>' . $description . '</option>'. PHP_EOL);
+            $this->output('>' . $description . '</option>' . PHP_EOL);
         }
 
-        $this->output('</select>'. PHP_EOL);
+        $this->output('</select>' . PHP_EOL);
         $this->clearAtEnd($theSettings);
     }
 
@@ -291,7 +290,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
      */
     public function hint($settings)
     {
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
 
         if (isset($theSettings['hint']) && (!empty($theSettings['hint']))) {
             $this->output('<span');
@@ -308,7 +307,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
                 $this->echoAttribute($theSettings, 'style');
             }
 
-            $this->output('>' . $theSettings['hint'] . '</span>'. PHP_EOL);
+            $this->output('>' . $theSettings['hint'] . '</span>' . PHP_EOL);
             $this->clearAtEnd($theSettings);
 
         }
@@ -317,7 +316,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
     public function label($settings)
     {
-        $theSettings = array_merge($this->defaultSettings,$settings);
+        $theSettings = array_merge($this->defaultSettings, $settings);
         $this->output('<label');
 
         if (isset($theSettings['name'])) {
@@ -338,7 +337,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             $this->output(' class="' . $theSettings['label_class'] . '"');
         } else {
             if (isset($theSettings['class'])) {
-                $this->output(' class="'. $theSettings['class'] . '"');
+                $this->output(' class="' . $theSettings['class'] . '"');
             } else {
                 $this->output(' class="text"');
             }
@@ -352,7 +351,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
             }
         }
 
-        $this->output('>' . $theSettings['label'] . '</label>'. PHP_EOL);
+        $this->output('>' . $theSettings['label'] . '</label>' . PHP_EOL);
     }
 
 
@@ -384,7 +383,7 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
         // ok... give up and take it from whatever database it was supposed to be in
         if (!isset($value)) {
-            $value = $theSettings['table']->$theSettings['field_name'];
+            $value = $theSettings['table']->field[$theSettings['field_name']];
         }
 
         return $value;
@@ -393,8 +392,8 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
     protected function clearAtEnd($theSettings)
     {
-        if ( (isset($theSettings['clearAtEnd'])==true) && ($theSettings['clearAtEnd']==true) ) {
-            $this->output('<div style="clear: both;"></div>'. PHP_EOL);
+        if ((isset($theSettings['clearAtEnd']) == true) && ($theSettings['clearAtEnd'] == true)) {
+            $this->output('<div style="clear: both;"></div>' . PHP_EOL);
         }
     }
 

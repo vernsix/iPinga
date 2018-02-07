@@ -25,6 +25,17 @@
 */
 namespace ipinga;
 
+/*
+ * CHANGELOG
+ *
+ * 2/6/2018 - Well, it was finally time to get rid of mcrypt().  This function has been deprecated for some time
+ * and it just needed to go away.  I have chosen to go with AES-256-CBC encryption method because it should be
+ * available to all platforms.  There are some nuances for others that would make this wrapper class a bit more
+ * cluttered.  If you need something different, it's easy to add and I may at some point. :)
+ *
+ */
+
+
 class crypto
 {
 
@@ -40,8 +51,6 @@ class crypto
             $ipinga = \ipinga\ipinga::getInstance();
 
             $defaults = array(
-                'encryption.algorithm' => $ipinga->config('encryption.algorithm'),
-                'encryption.mode' => $ipinga->config('encryption.mode'),
                 'encryption.key' => $ipinga->config('encryption.key'),
                 'encryption.iv' => $ipinga->config('encryption.iv')
             );
@@ -50,7 +59,6 @@ class crypto
         }
 
     }
-
 
     /**
      * @param string $clearText
@@ -61,23 +69,9 @@ class crypto
     public static function encrypt($clearText, $overrideDefaults = array())
     {
         self::applySettings($overrideDefaults);
-
-        $module = mcrypt_module_open( self::$settings['encryption.algorithm'], '', self::$settings['encryption.mode'], '');
-        $ivSize = mcrypt_enc_get_iv_size($module);
-        if (strlen(self::$settings['encryption.iv']) > $ivSize) {
-            self::$settings['encryption.iv'] = substr(self::$settings['encryption.iv'], 0, $ivSize);
-        }
-
-        $keySize = mcrypt_enc_get_key_size($module);
-        if (strlen(self::$settings['encryption.key']) > $keySize) {
-            $settings['encryption.key'] = substr(self::$settings['encryption.key'], 0, $keySize);
-        }
-
-        mcrypt_generic_init($module, self::$settings['encryption.key'], self::$settings['encryption.iv']);
-        $result = @mcrypt_generic($module, $clearText);
-        mcrypt_generic_deinit($module);
-
-        return $result;
+        $key = hash('sha256', self::$settings['encryption.key'] );
+        $iv = substr( hash('sha256', self::$settings['encryption.iv']), 0, 16 ); // has to be 16 chars
+        return base64_encode( openssl_encrypt( $clearText, 'AES-256-CBC', $key, 0, $iv) );
     }
 
     /**
@@ -89,35 +83,19 @@ class crypto
     public static function decrypt($encryptedString, $overrideDefaults = array())
     {
         self::applySettings($overrideDefaults);
-
-        $module = mcrypt_module_open(self::$settings['encryption.algorithm'], '', self::$settings['encryption.mode'], '');
-        $ivSize = mcrypt_enc_get_iv_size($module);
-        if (strlen(self::$settings['encryption.iv']) > $ivSize) {
-            self::$settings['encryption.iv'] = substr(self::$settings['encryption.iv'], 0, $ivSize);
-        }
-
-        $keySize = mcrypt_enc_get_key_size($module);
-        if (strlen(self::$settings['encryption.key']) > $keySize) {
-            self::$settings['encryption.key'] = substr(self::$settings['encryption.key'], 0, $keySize);
-        }
-
-        mcrypt_generic_init($module, self::$settings['encryption.key'], self::$settings['encryption.iv']);
-        $decryptedData = @mdecrypt_generic($module, $encryptedString);
-        $result = rtrim($decryptedData, "\0");
-        mcrypt_generic_deinit($module);
-
-        return $result;
+        $key = hash('sha256', self::$settings['encryption.key'] );
+        $iv = substr( hash('sha256', self::$settings['encryption.iv']), 0, 16 ); // has to be 16 chars
+        return openssl_decrypt(base64_decode($encryptedString), 'AES-256-CBC', $key, 0, $iv);
     }
-
 
     /**
      * @param array $arrayToEncrypt
      *
      * @return string printable encrypted string
      */
-    public static function printableEncrypt($arrayToEncrypt)
+    public static function printableEncrypt($mixedToEncrypt)
     {
-        $a = array('k' => $arrayToEncrypt);
+        $a = array('k' => $mixedToEncrypt);
         return  bin2hex(\ipinga\crypto::encrypt(json_encode($a)));
     }
 
@@ -134,4 +112,3 @@ class crypto
 
 }
 
-?>

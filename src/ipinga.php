@@ -109,10 +109,8 @@ namespace ipinga {
             $this->configOptions['cookie.name'] = 'ipinga';
             $this->configOptions['cookie.expiration_time'] = time() + (60 * 60 * 24 * 30);   //   30 days from now
 
-            $this->configOptions['encryption.algorithm'] = MCRYPT_RIJNDAEL_128;
             $this->configOptions['encryption.iv'] = md5('ipinga');
             $this->configOptions['encryption.key'] = 'you should change this'; // bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3';
-            $this->configOptions['encryption.mode'] = MCRYPT_MODE_CBC;
 
             $this->configOptions['manager.expired_url'] = '/index/expired';
             $this->configOptions['manager.ip_changed_url'] = '/index/ip_changed';
