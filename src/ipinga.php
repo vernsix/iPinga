@@ -321,7 +321,8 @@ namespace {
 
         // some devs name controllers differently
 
-        $filename = strtolower(substr($className, 0, strrpos($className, 'Controller'))) . '.controller.php';
+        // $filename = strtolower(substr($className, 0, strrpos($className, 'Controller'))) . '.controller.php';
+        $filename = substr($className, 0, strrpos($className, 'Controller')) . '.controller.php';
 
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
@@ -332,7 +333,8 @@ namespace {
         }
 
         // some devs name controllers with a class filename
-        $filename = strtolower($className) . '.class.php';
+        // $filename = strtolower($className) . '.class.php';
+        $filename = $className . '.class.php';
 
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
@@ -352,7 +354,8 @@ namespace {
 
 
         // an interface?
-        $filename = strtolower($className) . '.interface.php';
+        // $filename = strtolower($className) . '.interface.php';
+        $filename = $className . '.interface.php';
 
         $file = $ipinga->config('path.interfaces') . '/' . $filename;
         if (file_exists($file) == true) {
@@ -363,7 +366,8 @@ namespace {
 
 
         // part of the application models?
-        $filename = strtolower($className) . '.model.php';
+        // $filename = strtolower($className) . '.model.php';
+        $filename = $className . '.model.php';
 
         $file = $ipinga->config('path.models') . '/' . $filename;
         if (file_exists($file) == true) {
