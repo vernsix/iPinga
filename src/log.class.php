@@ -67,41 +67,41 @@ class log
         }
     }
 
-    public static function trace($logMessage)
+    public static function trace($message = '', $details = '')
     {
-        self::this('trace', $logMessage);
+        self::this('trace', $message, $details);
     }
-    public static function debug($logMessage)
+    public static function debug($message = '', $details = '')
     {
-        self::this('debug',$logMessage);
+        self::this('debug',$message, $details);
     }
-    public static function info($logMessage)
+    public static function info($message = '', $details = '')
     {
-        self::this('info',$logMessage);
+        self::this('info',$message, $details);
     }
-    public static function notice($logMessage)
+    public static function notice($message = '', $details = '')
     {
-        self::this('notice',$logMessage);
+        self::this('notice',$message, $details);
     }
-    public static function warning($logMessage)
+    public static function warning($message = '', $details = '')
     {
-        self::this('warning',$logMessage);
+        self::this('warning',$message, $details);
     }
-    public static function error($logMessage)
+    public static function error($message = '', $details = '')
     {
-        self::this('error',$logMessage);
+        self::this('error',$message, $details);
     }
-    public static function critical($logMessage)
+    public static function critical($message = '', $details = '')
     {
-        self::this('critical',$logMessage);
+        self::this('critical',$message, $details);
     }
-    public static function alert($logMessage)
+    public static function alert($message = '', $details = '')
     {
-        self::this('alert',$logMessage);
+        self::this('alert',$message, $details);
     }
-    public static function emergency($logMessage)
+    public static function emergency($message = '', $details = '')
     {
-        self::this('emergency',$logMessage);
+        self::this('emergency',$message, $details);
     }
 
 }
