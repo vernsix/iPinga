@@ -18,7 +18,10 @@
     "email": "vern@ipinga.com"
   },
   "require": {
-    "php": ">=5.3.0"
+    "php": ">=7.0.0",
+    "ext-PDO": "*",
+    "ext-openssl": "*",
+    "ext-json": "*"
   },
   "suggest": {
     "ext-mcrypt": "Required for HTTP cookie encryption",

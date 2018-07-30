@@ -33,7 +33,7 @@ namespace ipinga {
         /**
          * @var \ipinga\ipinga
          */
-        protected static $instance;
+        protected static $_instance;
 
         /**
          * @var /PDO
@@ -73,8 +73,8 @@ namespace ipinga {
          */
         public static function getInstance()
         {
-            if (isset(static::$instance) == true) {
-                return static::$instance;
+            if (isset(static::$_instance) == true) {
+                return static::$_instance;
             } else {
                 return null;
             }
@@ -89,14 +89,14 @@ namespace ipinga {
             // start with defaults
             $this->setConfigOptionsToDefault();
 
-            // allow the developer to override all the defaults.  Notice: no checking is performed !
+            // allow the developer to override all the defaults.  Notice: no checking is performed!
             $this->configOptions = array_merge($this->configOptions,$overrideConfigOptions);
 
             // php acts stupid without setting the timezone
             date_default_timezone_set($this->configOptions['time.timezone']);
 
             // so outside functions can get ahold of the ipinga object
-            static::$instance = $this;
+            static::$_instance = $this;
 
             $this->manager = new \ipinga\manager($this->configOptions);
 
@@ -132,7 +132,7 @@ namespace ipinga {
             $this->configOptions['path.models'] = getcwd() . '/models';
             $this->configOptions['path.views'] = getcwd() . '/views';
 
-            $this->configOptions['logfile'] = getcwd() . '/logfile.php';
+            $this->configOptions['logTableName'] = 'log';
 
             $this->configOptions['time.timezone'] = 'America/Chicago';
             // php acts stupid without setting the timezone
@@ -214,26 +214,17 @@ namespace ipinga {
 
             $routeHandled = false;
             foreach( $this->routes as $route) {
-
                 /* @var $route \ipinga\route */
-
                 if ($route->handled($rt) == true) {
                     $routeHandled = true;
                     break;
                 }
-
             }
 
             if ($routeHandled===false) {
                 if (count($this->defaultRoute)==2) {
-
-                    \ipinga\log::debug('Firing default route');
-                    //if (isset($_GET['rt'])==false) {
-                        \ipinga\route::launchController($this->defaultRoute[0], $this->defaultRoute[1], array());
-                    //} else {
-                    //    header('location: /');
-                    //}
-
+                    \ipinga\log::trace('Firing default route');
+                    \ipinga\route::launchController($this->defaultRoute[0], $this->defaultRoute[1], array());
                 } else {
                     echo 'No route found!' . PHP_EOL;
                 }
@@ -251,7 +242,6 @@ namespace ipinga {
         {
             $this->routes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware,$identifier);
         }
-
 
         /**
          * @param      $urlToMatch
@@ -274,9 +264,6 @@ namespace ipinga {
         {
             $this->postRoutes[] = new \ipinga\route($urlToMatch,$controller,$method,$middleware,$identifier);
         }
-
-
-
 
         /**
          * @param $controller
@@ -312,12 +299,7 @@ namespace {
             }
         }
 
-/*
-         $c = debug_backtrace(false);
-        \ipinga\log::debug(var_export($c,true));
-*/
-
-        \ipinga\log::debug('autoload $className='. $className);
+        \ipinga\log::trace('autoload $className='. $className);
 
         // some devs name controllers differently
 
@@ -327,7 +309,7 @@ namespace {
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload (controller) $file='. $file);
+            \ipinga\log::trace('autoload (controller) $file='. $file);
             require_once $file;
             return true;
         }
@@ -339,7 +321,7 @@ namespace {
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload (class in controller directory) $file='. $file);
+            \ipinga\log::trace('autoload (class in controller directory) $file='. $file);
             require_once $file;
             return true;
         }
@@ -347,11 +329,10 @@ namespace {
         // some other class?
         $file = $ipinga->config('path.classes') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload (class) $file='. $file);
+            \ipinga\log::trace('autoload (class) $file='. $file);
             require_once $file;
             return true;
         }
-
 
         // an interface?
         // $filename = strtolower($className) . '.interface.php';
@@ -359,11 +340,10 @@ namespace {
 
         $file = $ipinga->config('path.interfaces') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload (interface) $file='. $file);
+            \ipinga\log::trace('autoload (interface) $file='. $file);
             require_once $file;
             return true;
         }
-
 
         // part of the application models?
         // $filename = strtolower($className) . '.model.php';
@@ -371,7 +351,7 @@ namespace {
 
         $file = $ipinga->config('path.models') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::debug('autoload (model) $file='. $file);
+            \ipinga\log::trace('autoload (model) $file='. $file);
             require_once $file;
             return true;
         }
@@ -386,8 +366,6 @@ namespace {
 
     function ipinga_shutdown()
     {
-        // v6_debug::dump();
-
         \ipinga\cookie::set();
 
         @ob_end_flush();
@@ -395,7 +373,6 @@ namespace {
         $error = error_get_last();
         if (($error !== NULL) && ($error['type'] == 1)) {
 //        ob_end_clean();   // silently discard the output buffer contents.
-//        appSendMsgToVern('Error has occurred',$error);
 //        header( 'location:/fatal_error' );
             @ob_end_flush(); // output what is stored in the internal buffer  (may not want this here in production)
             \ipinga\log::info(var_export($error,true));

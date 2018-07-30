@@ -25,52 +25,52 @@
 */
 namespace ipinga;
 
-Abstract Class controller
+class values
 {
 
-    /**
-     * @var \ipinga\template
-     */
-    public $template;
+    protected static $_vars = [];
 
-    /**
-     * I like having this, but it's really not needed by every controller by any means.
-     *
-     * @var array
-     */
-    public $json = array();
-
-
-    function __construct()
+    public static function get(string $key = '')
     {
-        $this->template = new \ipinga\template();
+        if (array_key_exists($key,self::$_vars)) {
+            return self::$_vars[$key];
+        }
+        return null;
+    }
+
+    public static function set(string $key = '', $value = null)
+    {
+        self::$_vars[$key] = $value;
+    }
+
+    public static function clear(string $key = '')
+    {
+        if (array_key_exists($key,self::$_vars)) {
+            unset(self::$_vars[$key]);
+        }
     }
 
 
-    /**
-     * all controllers must contain an index method
-     */
-    abstract function index();
 
 
-    public function SendJSON($arrayToSendAsJson = null)
+    public static function userId(int $newUserId = null)
     {
-
-        // If you get careless, this next line can be uncommented to wipe clean all the output buffer prior to
-        // setting the value in the header.   But if you are going to send a json response, it really should be
-        // your only response and therefore the buffer shouldn't have anything in it.  Uncommenting this line
-        // is only a suggestion for lazy programmers   :)
-        //
-        // ob_end_clean();
-
-        header("Content-Type:text/json");
-        echo json_encode(isset($arrayToSendAsJson) ? $arrayToSendAsJson : $this->json);
-        exit();
+        if (isset($newUserId)) {
+            self::set('userId',$newUserId);
+        }
+        return self::get('userId');
     }
 
-
+    public static function sessionId()
+    {
+        $sessionId = self::get('sessionId');
+        if (is_null($sessionId)) {
+            $sessionId = \ipinga\guid::create();
+            self::set('sessionId',$sessionId);
+        }
+        return $sessionId;
+    }
 
 
 }
 
-?>

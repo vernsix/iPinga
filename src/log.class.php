@@ -2,7 +2,7 @@
 /*
     Vern Six MVC Framework version 3.0
 
-    Copyright (c) 2007-2015 by Vernon E. Six, Jr.
+    Copyright (c) 2007-2018 by Vernon E. Six, Jr.
     Author's websites: http://www.ipinga.com and http://www.VernSix.com
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,129 +27,81 @@ namespace ipinga;
 
 class log
 {
-    public static $filename;
-    public static $instanceName;
-    public static $threshold = 1;
-    public static $environment;
 
-    public static function setThreshold($newThreshold)
+    private static $_filter = [];
+
+    public static function filter(string $type, bool $onOffSwitch = false)
     {
-        $oldThreshold = self::$threshold;
-        self::$threshold = $newThreshold;
-        self::instanceName();
-        return $oldThreshold;
+        self::$_filter[strtolower($type)] = $onOffSwitch;
     }
 
-    public static function instanceName($newInstanceName=null)
+    public static function this(string $type = '', string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        if (isset($newInstanceName)==true) {
-            self::$instanceName = $newInstanceName;
+        $type = strtolower($type);
+        if (array_key_exists($type, self::$_filter)) {
+            $logThis = self::$_filter[$type];
+        } else {
+            $logThis = true;
         }
-        if (isset(self::$instanceName)==false) {
-            self::$instanceName = (string)microtime(true); // (string)time();
-        }
-        return self::$instanceName;
-    }
 
-    public static function environment($newEnvironment=null)
-    {
-        if (isset($newEnvironment)==true) {
-            self::$environment = $newEnvironment;
-        }
-        self::instanceName();
-        return self::$environment;
-    }
-
-    public static function log( $level, $logMessage )
-    {
-        $instanceName = self::instanceName();
-
-        if ($level >= self::$threshold) {
-            if ( ($level>=0) && ($level<=7) ) {
-                $type = array('DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY')[$level];
+        if ($logThis) {
+            $l = new \ipinga\table(\ipinga\ipinga::getInstance()->config('logTableName'));
+            $l->id = 0; // new record
+            $l->type = $type;
+            $l->message = $message;
+            $l->details = $details;
+            $l->user_id = \ipinga\values::userId();
+            $l->remote_addr = $_SERVER['REMOTE_ADDR'];
+            $l->route = (isset($_GET['rt'])) ? $_GET['rt'] : '';
+            $l->request_method = $_SERVER['REQUEST_METHOD'];
+            $l->server_name = $_SERVER['SERVER_NAME'];
+            $l->session_id = \ipinga\values::sessionId();
+            if ($logRequestInfo) {
+                $l->_GET = json_encode($_GET);
+                $l->_POST = json_encode($_POST);
             } else {
-                $type = 'UNKNOWN';
+                $l->_GET = '';
+                $l->_POST = '';
             }
-            try {
-
-                if (isset(self::$filename)==false) {
-                    self::$filename = \ipinga\ipinga::getInstance()->config('logfile');
-                }
-
-                if ( file_exists(self::$filename) == true ) {
-                    $handle = fopen(self::$filename, 'ab');
-                    if (!$handle) {
-                        throw new \Exception('(log-1) Failed to open file ' . self::$filename);
-                    }
-                } else {
-                    $handle = fopen(self::$filename, 'wb');
-                    if (!$handle) {
-                        throw new \Exception('(log-2) Failed to create file ' . self::$filename);
-                    }
-                }
-
-                fseek($handle, 0, SEEK_END);
-
-                if (isset(self::$environment) == true) {
-                    $environment = self::$environment;
-                    fwrite($handle, date("Y-m-d H:i:s") . " [$type] [$environment] [$instanceName] $logMessage\r\n");
-                } else {
-                    fwrite($handle, date("Y-m-d H:i:s") . " [$type] [$instanceName] $logMessage\r\n");
-                }
-
-                fflush($handle);
-                fclose($handle);
-            } catch (\Exception $e) {
-                die($e->getMessage());
-            }
+            $l->save();
         }
     }
 
+    public static function trace($logMessage)
+    {
+        self::this('trace', $logMessage);
+    }
     public static function debug($logMessage)
     {
-        self::log(0,$logMessage);
+        self::this('debug',$logMessage);
     }
     public static function info($logMessage)
     {
-        self::log(1,$logMessage);
+        self::this('info',$logMessage);
     }
     public static function notice($logMessage)
     {
-        self::log(2,$logMessage);
+        self::this('notice',$logMessage);
     }
     public static function warning($logMessage)
     {
-        self::log(3,$logMessage);
+        self::this('warning',$logMessage);
     }
     public static function error($logMessage)
     {
-        self::log(4,$logMessage);
+        self::this('error',$logMessage);
     }
     public static function critical($logMessage)
     {
-        self::log(5,$logMessage);
+        self::this('critical',$logMessage);
     }
     public static function alert($logMessage)
     {
-        self::log(6,$logMessage);
+        self::this('alert',$logMessage);
     }
     public static function emergency($logMessage)
     {
-        self::log(7,$logMessage);
+        self::this('emergency',$logMessage);
     }
 
 }
-
-class logLevel
-{
-    const EMERGENCY = 7;
-    const ALERT     = 6;
-    const CRITICAL  = 5;
-    const ERROR     = 4;
-    const WARNING   = 3;
-    const NOTICE    = 2;
-    const INFO      = 1;
-    const DEBUG     = 0;
-}
-
-?>

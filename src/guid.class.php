@@ -25,52 +25,27 @@
 */
 namespace ipinga;
 
-Abstract Class controller
+class guid
 {
 
-    /**
-     * @var \ipinga\template
-     */
-    public $template;
-
-    /**
-     * I like having this, but it's really not needed by every controller by any means.
-     *
-     * @var array
-     */
-    public $json = array();
-
-
-    function __construct()
+    public static function create()
     {
-        $this->template = new \ipinga\template();
+        $token = $_SERVER['HTTP_HOST'];
+        $token .= $_SERVER['REQUEST_URI'];
+        $token .= uniqid(rand(), true);
+        $hash = strtoupper(md5($token));
+
+        // XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+        $guid = substr($hash, 0, 8) .
+            '-' .
+            substr($hash, 8, 4) .
+            '-' .
+            substr($hash, 12, 4) .
+            '-' .
+            substr($hash, 16, 4) .
+            '-' .
+            substr($hash, 20, 12);
+        return $guid;
     }
-
-
-    /**
-     * all controllers must contain an index method
-     */
-    abstract function index();
-
-
-    public function SendJSON($arrayToSendAsJson = null)
-    {
-
-        // If you get careless, this next line can be uncommented to wipe clean all the output buffer prior to
-        // setting the value in the header.   But if you are going to send a json response, it really should be
-        // your only response and therefore the buffer shouldn't have anything in it.  Uncommenting this line
-        // is only a suggestion for lazy programmers   :)
-        //
-        // ob_end_clean();
-
-        header("Content-Type:text/json");
-        echo json_encode(isset($arrayToSendAsJson) ? $arrayToSendAsJson : $this->json);
-        exit();
-    }
-
-
-
 
 }
-
-?>

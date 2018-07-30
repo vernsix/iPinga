@@ -98,13 +98,7 @@ Class template
             $$key = $value;
         }
 
-        // if sysmaint.view.php exists, then the system is down for maintenance and I should show that view instead
-        $sysmaint = $ipinga->config('path.views') . '/sysmaint.view.php';
-        if (file_exists($sysmaint) == true) {
-            include_once($sysmaint);
-        } else {
-            include_once($viewFilename);
-        }
+        include_once($viewFilename);
 
     }   // show
 

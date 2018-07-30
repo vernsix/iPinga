@@ -2,7 +2,7 @@
 /*
     Vern Six MVC Framework version 3.0
 
-    Copyright (c) 2007-2015 by Vernon E. Six, Jr.
+    Copyright (c) 2007-2018 by Vernon E. Six, Jr.
     Author's websites: http://www.ipinga.com and http://www.VernSix.com
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -76,8 +76,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     /**
      * @param $settings array
      * @param $attrName string
-     *
-     * @return null
      */
     public function echoAttribute($settings, $attrName)
     {
@@ -125,8 +123,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
     /**
      * @param $settings
      * @param $varName
-     *
-     * @return null
      */
     public function echoHints($settings, $varName)
     {
@@ -149,8 +145,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
     /**
      * @param $settings
-     *
-     * @return null
      */
     public function textarea($settings)
     {
@@ -176,8 +170,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
     /**
      * @param $settings
-     *
-     * @return null
      */
     public function field($settings)
     {
@@ -219,8 +211,6 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
     /**
      * @param $settings
-     *
-     * @return null
      */
     public function select($settings)
     {
@@ -399,5 +389,3 @@ Class defaultHtmlGenerator extends \ipinga\htmlGenerator
 
 
 }
-
-?>
