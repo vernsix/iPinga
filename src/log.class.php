@@ -35,6 +35,12 @@ class log
         self::$_filter[strtolower($type)] = $onOffSwitch;
     }
 
+    public static function microtime_fixed()
+    {
+        list($usec, $sec) = explode(" ", microtime());
+        return $sec. substr($usec,1);
+    }
+
     public static function this(string $type = '', string $message = '', string $details = '', bool $logRequestInfo = false)
     {
         $type = strtolower($type);
@@ -47,6 +53,7 @@ class log
         if ($logThis) {
             $l = new \ipinga\table(\ipinga\ipinga::getInstance()->config('logTableName'));
             $l->id = 0; // new record
+            $l->microtime = self::microtime_fixed();
             $l->type = $type;
             $l->message = $message;
             $l->details = $details;
