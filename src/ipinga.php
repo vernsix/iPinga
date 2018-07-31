@@ -223,7 +223,7 @@ namespace ipinga {
 
             if ($routeHandled===false) {
                 if (count($this->defaultRoute)==2) {
-                    \ipinga\log::trace('Firing default route');
+                    \ipinga\log::ipinga('Firing default route');
                     \ipinga\route::launchController($this->defaultRoute[0], $this->defaultRoute[1], array());
                 } else {
                     echo 'No route found!' . PHP_EOL;
@@ -299,7 +299,7 @@ namespace {
             }
         }
 
-        \ipinga\log::trace('autoload $className='. $className);
+        \ipinga\log::ipinga('autoload $className='. $className);
 
         // some devs name controllers differently
 
@@ -309,7 +309,7 @@ namespace {
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::trace('autoload (controller) $file='. $file);
+            \ipinga\log::ipinga('autoload (controller) $file='. $file);
             require_once $file;
             return true;
         }
@@ -321,7 +321,7 @@ namespace {
         // part of the application controllers?
         $file = $ipinga->config('path.controllers') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::trace('autoload (class in controller directory) $file='. $file);
+            \ipinga\log::ipinga('autoload (class in controller directory) $file='. $file);
             require_once $file;
             return true;
         }
@@ -329,7 +329,7 @@ namespace {
         // some other class?
         $file = $ipinga->config('path.classes') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::trace('autoload (class) $file='. $file);
+            \ipinga\log::ipinga('autoload (class) $file='. $file);
             require_once $file;
             return true;
         }
@@ -340,7 +340,7 @@ namespace {
 
         $file = $ipinga->config('path.interfaces') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::trace('autoload (interface) $file='. $file);
+            \ipinga\log::ipinga('autoload (interface) $file='. $file);
             require_once $file;
             return true;
         }
@@ -351,7 +351,7 @@ namespace {
 
         $file = $ipinga->config('path.models') . '/' . $filename;
         if (file_exists($file) == true) {
-            \ipinga\log::trace('autoload (model) $file='. $file);
+            \ipinga\log::ipinga('autoload (model) $file='. $file);
             require_once $file;
             return true;
         }

@@ -39,7 +39,7 @@ class route
     {
         $ipinga = \ipinga\ipinga::getInstance();
         $class = $controller . 'Controller';
-        \ipinga\log::trace('Launching controller: '. $class);
+        \ipinga\log::ipinga('Launching controller: '. $class);
         $controller = new $class;
         call_user_func_array(array($controller, $method), $params);
 
@@ -89,12 +89,12 @@ class route
                     for ($i = count($uriSegmentsInThisRoute) - $NumberOfParams; $i < count($uriSegmentsInThisRoute); $i++) {
                         $params[] = $uriSegmentsInRequestedRoute[$i];
                     }
-                    \ipinga\log::trace('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') fired!');
+                    \ipinga\log::ipinga('Route {'. $this->identifier .'} ('. $this->urlToMatch. ') fired!');
                     self::launchController($this->controller, $this->method, $params);
                     $this->fired = true;
                     return true;
                 } else {
-                    \ipinga\log::trace('Route {'. $this->identifier .'} middcleware refused');
+                    \ipinga\log::ipinga('Route {'. $this->identifier .'} middcleware refused');
                 }
             }
 

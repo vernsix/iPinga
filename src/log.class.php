@@ -67,6 +67,10 @@ class log
         }
     }
 
+    public static function ipinga(string $message = '', string $details = '', bool $logRequestInfo = false)
+    {
+        self::this('ipinga', $message, $details, $logRequestInfo);
+    }
     public static function trace(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
         self::this('trace', $message, $details, $logRequestInfo);
