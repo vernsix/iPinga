@@ -67,41 +67,41 @@ class log
         }
     }
 
-    public static function trace($message = '', $details = '')
+    public static function trace(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('trace', $message, $details);
+        self::this('trace', $message, $details, $logRequestInfo);
     }
-    public static function debug($message = '', $details = '')
+    public static function debug(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('debug',$message, $details);
+        self::this('debug',$message, $details, $logRequestInfo);
     }
-    public static function info($message = '', $details = '')
+    public static function info(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('info',$message, $details);
+        self::this('info',$message, $details, $logRequestInfo);
     }
-    public static function notice($message = '', $details = '')
+    public static function notice(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('notice',$message, $details);
+        self::this('notice',$message, $details, $logRequestInfo);
     }
-    public static function warning($message = '', $details = '')
+    public static function warning(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('warning',$message, $details);
+        self::this('warning',$message, $details, $logRequestInfo);
     }
-    public static function error($message = '', $details = '')
+    public static function error(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('error',$message, $details);
+        self::this('error',$message, $details, $logRequestInfo);
     }
-    public static function critical($message = '', $details = '')
+    public static function critical(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('critical',$message, $details);
+        self::this('critical',$message, $details, $logRequestInfo);
     }
-    public static function alert($message = '', $details = '')
+    public static function alert(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('alert',$message, $details);
+        self::this('alert',$message, $details, $logRequestInfo);
     }
-    public static function emergency($message = '', $details = '')
+    public static function emergency(string $message = '', string $details = '', bool $logRequestInfo = false)
     {
-        self::this('emergency',$message, $details);
+        self::this('emergency',$message, $details, $logRequestInfo);
     }
 
 }

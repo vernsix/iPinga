@@ -2,7 +2,10 @@
   "name": "vernsix/ipinga",
   "description": "ipinga, a PHP mini framework",
   "type": "library",
-  "keywords": ["miniframework","router"],
+  "keywords": [
+    "miniframework",
+    "router"
+  ],
   "homepage": "http://ipinga.com",
   "time": "2015-10-26",
   "license": "MIT",
