@@ -41,7 +41,7 @@ class log
         return $sec. substr($usec,1);
     }
 
-    public static function this(string $type = '', string $message = '', string $details = '', bool $logRequestInfo = false)
+    public static function this( string $type = '', string $message = '', string $details = '', bool $logRequestInfo = false)
     {
         $type = strtolower($type);
         if (array_key_exists($type, self::$_filter)) {

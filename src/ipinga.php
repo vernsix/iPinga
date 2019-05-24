@@ -66,6 +66,12 @@ namespace ipinga {
         public $manager;
 
 
+        public static function version()
+        {
+            return "v1.0.69";
+        }
+
+
         /**
          * Get instance of the ipinga object
          *
