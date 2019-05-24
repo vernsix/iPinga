@@ -106,4 +106,3 @@ Abstract Class htmlGenerator
 
 }
 
-?>

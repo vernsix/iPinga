@@ -85,4 +85,3 @@ Class userTable Extends \ipinga\table
     }
 
 }
-?>

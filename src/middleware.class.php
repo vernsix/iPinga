@@ -35,4 +35,3 @@ Abstract Class middleware
 
 }
 
-?>

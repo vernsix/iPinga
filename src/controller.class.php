@@ -73,4 +73,3 @@ Abstract Class controller
 
 }
 
-?>
